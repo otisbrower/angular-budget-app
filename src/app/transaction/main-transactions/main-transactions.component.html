@@ -1,0 +1,139 @@
+<nav class="breadcrumb">Transactions</nav>
+<h6 class="section-header">Enter New Transaction</h6>
+<div class="create-page">
+  <div class="page-content">
+    <ng-container *ngIf="transactionForm">
+      <form class="create-form form-inline" [formGroup]="transactionForm" #registerForm="ngForm" (ngSubmit)="onSubmit(transactionForm.value)" novalidate style="margin-left: 15px;">
+        <table class="transaction-table">
+          <th>Transaction Type</th>
+          <th style="min-width: 200px; max-width: 200px;">Main Category</th>
+          <th style="min-width: 200px; max-width: 200px;">Subcategory</th>
+          <ng-container *ngIf="transactionForm?.getRawValue()['transactionType'] !== 'Deposit'; else isDeposit1">
+            <th style="min-width: 250px">From Account</th>
+          </ng-container>
+          <ng-template #isDeposit1>
+            <th style="min-width: 250px"></th>
+          </ng-template>
+          <ng-container *ngIf="transactionForm?.get('transactionType').value !== 'Debit'; else isDebit1">
+            <th>To Account</th>
+          </ng-container>
+          <ng-template #isDebit1>
+            <th style="min-width: 250px"></th>
+          </ng-template>
+          <th style="width: 80%">Description</th>
+          <th style="width: 15%">Amount</th>
+          <th>Transaction Date</th>
+          <th></th>
+          <tr>
+            <td>
+            <ng-container  #selectedTransType class="form-group" *ngIf="transactionTypes">
+              <mat-select class="transaction-input-style">
+                <select matInput (change)="onTransactionTypeSelect($event.target['value'])" id="selectedTransType" placeholder="Transaction Type" class="transaction-input-style" formControlName="transactionType">
+                  <ng-container *ngFor="let transactionType of transactionTypes">
+                    <option [value]="transactionType.type">{{transactionType.type}}</option>
+                  </ng-container>
+                </select>
+              </mat-select>
+                <ng-container *ngFor="let validation of validateMessages.transactionType">
+                  <matt-error *ngIf="transactionForm.get('transactionType').hasError(validation.type) && (transactionForm.get('transactionType').dirty || transactionForm.get('transactionType').touched)">{{validation.message}}</matt-error>
+                </ng-container>
+              </ng-container>
+            </td>
+          <!--&nbsp;-->
+            <td>
+            <ng-container *ngIf="budgetCategories">
+              <mat-select class="transaction-input-style">
+                <select matInput #mainBudgetCategory (change)="onCategorySelect($event.target['value'])" id="mainBudgetCategory" class="transaction-input-style" placeholder="MainCategory" formControlName="mainCategory" style="width: 100%;">
+                  <ng-container *ngFor="let mainCategory of budgetCategories">
+                    <option id="{{mainCategory.payload.doc.id}}"  [value]="mainCategory.payload.doc.data().main_category">{{mainCategory.payload.doc.data().main_category}}</option>
+                  </ng-container>
+                </select>
+              </mat-select>
+            </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                <mat-select class="transaction-input-style">
+                  <select matInput style="min-width: 200px;" id="subCategory" class="transaction-input-style" placeholder="Subcategory" formControlName="subCategory">
+                    <ng-container *ngFor="let subCategory of subCategories">
+                      <option id="{{subCategory.payload.doc.id}}}" [value]="subCategory.payload.doc.data().category">{{subCategory.payload.doc.data().category}}</option>
+                    </ng-container>
+                  </select>
+                </mat-select>
+              </ng-container>
+            </td>
+            <ng-container *ngIf="transactionForm?.get('transactionType').value !== 'Deposit'; else isDeposit2">
+              <td><!--From Account, except Deposit-->
+                <ng-container>
+                  <mat-select class="transaction-input-style">
+                    <select matInput style="min-width: 250px" id="fromAccountSelect" class="transaction-input-style" placeholder="From Account" formControlName="fromAccountID" [attr.required]="transactionForm?.get('transactionType').value !== 'Deposit'">
+                      <ng-container *ngFor="let account of fromAccounts">
+                        <option [value]="account.payload.doc.id">{{account.payload.doc.data().accountName}}</option>
+                      </ng-container>
+                    </select>
+                  </mat-select>
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-template #isDeposit2>
+              <td>
+                <span style="min-width: 250px;"></span>
+              </td>
+            </ng-template>
+            <ng-container *ngIf="transactionForm?.get('transactionType').value !== 'Debit'; else isDebit">
+              <td><!--To Account, except Debit-->
+                <ng-container>
+                  <mat-select class="transaction-input-style">
+                    <select  matInput style="min-width: 250px;" id="toAccountSelect" class="transaction-input-style" placeholder="To Account" formControlName="toAccountID" [attr.required]="transactionForm?.get('transactionType').value !== 'Debit'">
+                      <ng-container *ngFor="let account of toAccounts">
+                        <option [value]="account.payload.doc.id">{{account.payload.doc.data().accountName}}</option>
+                      </ng-container>
+                    </select>
+                  </mat-select>
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-template #isDebit>
+              <td>
+                <span style="min-width: 250px;"></span>
+              </td>
+            </ng-template>
+            <td>
+            <mat-input>
+              <input type="text" style="width: 100%;" class="transaction-input-style" placeholder="Description" formControlName="description">
+            </mat-input>
+            </td>
+            <td>
+              <mat-input>
+                <!--<div class="input-group-prepend" style="margin-left: 5px">-->
+                <!--<span class="input-group-text">$</span>-->
+                <!--</div>-->
+                <input type="text" [value]="transactionForm.get('transactionAmount').value" (change)="updateAmount($event.target['value'])" min="0" step=".01" class="transaction-input-style" placeholder="0.00" formControlName="transactionAmount">
+              </mat-input>
+            </td>
+            <td>
+              <mat-form-field>
+                <input matInput type="text" style="font-size: 20px" [matDatepicker]="picker" placeholder="Choose a date" class="transaction-input-style" formControlName="transactionDate">
+                <mat-datepicker-toggle style="size: 25px" matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </td>
+            <td>
+              <ng-container *ngIf=" !transactionForm.pristine && transactionForm?.valid; else formInvalid">
+                <button class="icon-submit-button" type="submit">
+                <!--<a class="submit-button-container">-->
+                <i style="height: 24px; width: 24px; color: lightgreen;" class="center fa-3x far fa-plus-square"></i>
+                <!--</a>-->
+                </button>
+              </ng-container>
+              <ng-template #formInvalid>
+                <i style="height: 24px; width: 24px; color: gray; margin-left: 5px" class="center fa-3x far fa-plus-square"> </i>
+              </ng-template>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </ng-container>
+  </div>
+</div>
+<app-recent-transaction-list></app-recent-transaction-list>

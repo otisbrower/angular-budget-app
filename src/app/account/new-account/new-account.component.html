@@ -1,0 +1,52 @@
+<div class="create-page">
+  <nav aria-label="breadcrumb">
+      <span class="breadcrumb-item active" aria-current="page">Add Account</span>
+  </nav>
+  <div class="page-content">
+    <div class="row">
+      <div class="col col-md-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Bank_account_-_The_Noun_Project.svg/512px-Bank_account_-_The_Noun_Project.svg.png" alt="" class="img-avatar acc-image">
+      </div>
+    </div>
+
+    <div class="col col-md-8">
+      <form  class="create-form" [formGroup]="accountForm" novalidate (ngSubmit)="onSubmit(accountForm.value)">
+        <div class="form-group">
+          <mat-form-field class="input-style">
+            <input matInput placeholder="Account Name" class="form-control" formControlName="accountName">
+          </mat-form-field>
+          <ng-container *ngFor="let validation of validationMessages.accountName">
+            <mat-error *ngIf="accountForm.get('accountName').hasError(validation.type) && (accountForm.get('accountName').dirty || accountForm.get('accountName').touched)">{{validation.message}}</mat-error>
+          </ng-container>
+        </div>
+
+        <div class="form-group">
+          <mat-select class="input-style">
+            <select matInput placeholder="Account Type" class="form-control" formControlName="accountType">
+              <option *ngFor="let accountType of accountTypeList; index as i" [value]="accountType['type']">{{accountType['type']}}</option>
+            </select>
+          </mat-select>
+          <ng-container *ngFor="let validation of validationMessages.accountType">
+            <mat-error *ngIf="accountForm.get('accountType').hasError(validation.type) && (accountForm.get('accountType').dirty || accountForm.get('accountType').touched)">{{validation.message}}</mat-error>
+          </ng-container>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field class="input-style">
+            <input matInput placeholder="Current Balance" class="form-control" formControlName="currentBalance">
+          </mat-form-field>
+          <ng-container *ngFor="let validation of validationMessages.currentBalance">
+            <mat-error *ngIf="accountForm.get('currentBalance').hasError(validation.type) && (accountForm.get('currentBalance').dirty || accountForm.get('currentBalance').touched)">{{validation.message}}</mat-error>
+          </ng-container>
+        </div>
+
+        <div class="row submit-button-container">
+          <div class="col-md-4">
+            <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="!accountForm.valid">Add Account</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<h6 class="section-header">
+  <span>Recent Transactions</span>
+  <span style="float: right">
+    <label for="historyDaysSelect" class="padRight20">Days:</label>
+    <select class="transaction-input-style" name="historyDaysSelect" id="historyDaysSelect" (change)="onSelectDateRange($event.target['value'])">
+      <ng-container *ngFor="let days of historyDays">
+        <option value="{{days}}">{{days}}</option>
+      </ng-container>
+    </select>
+  </span>
+</h6>
+<table>
+  <tr>
+    <th>Transaction ID</th>
+    <th>Transaction Type</th>
+    <th>Transaction Date</th>
+    <th>Category</th>
+    <th>Subcategory</th>
+    <th>From Account</th>
+    <th>To Account</th>
+    <th>Amount</th>
+  </tr>
+  <ng-container *ngIf="transactionList">
+    <ng-container *ngFor="let transaction of transactionList">
+      <tr>
+        <td>{{transaction.payload.doc.id}}</td>
+        <td>{{transaction.payload.doc.data().transactionType}}</td>
+        <td>{{transaction.payload.doc.data().transactionDate.seconds*1000 | date: 'MM/dd/yyyy'}}</td>
+        <td>{{transaction.payload.doc.data().mainCategory}}</td>
+        <td>{{transaction.payload.doc.data().subCategory}}</td>
+        <td>{{transaction.payload.doc.data().fromAccount}}</td>
+        <td>{{transaction.payload.doc.data().toAccount}}</td>
+        <td>{{transaction.payload.doc.data().transactionAmount}}</td>
+      </tr>
+    </ng-container>
+  </ng-container>
+</table>
