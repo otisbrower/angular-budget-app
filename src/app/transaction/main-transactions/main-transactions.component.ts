@@ -117,7 +117,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
     } else {
       this.debitDepositFlag = false;
     }
-    this.transactionForm.controls['mainCategory'].reset();
+    this.transactionForm.controls['mainCategory'].setValue('');
     this.transactionForm.controls['subCategory'].setValue('');
     this.getMainCategories(this.debitDepositFlag);
     this.firebaseService.getFromAccounts(type).subscribe(resp => this.fromAccounts = resp);
@@ -133,14 +133,14 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
     this.firebaseService.getAccount(value).subscribe(resp => {
       let item = resp.payload.data();
       console.log(item);
-      this.transactionForm.controls['fromAccount'].setValue(item.accountName);
+      this.transactionForm.controls['fromAccount'].setValue(item['accountName']);
     });
   }
 
   setToAccount(value) {
     this.firebaseService.getAccount(value).subscribe( resp => {
       let item = resp.payload.data();
-      this.transactionForm.controls['toAccount'].setValue(item.accountName);
+      this.transactionForm.controls['toAccount'].setValue(item['accountName']);
     })
   }
 

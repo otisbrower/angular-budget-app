@@ -44,6 +44,7 @@
             <ng-container *ngIf="budgetCategories">
               <mat-select class="transaction-input-style">
                 <select matInput #mainBudgetCategory (change)="onCategorySelect($event.target['value'])" id="mainBudgetCategory" class="transaction-input-style" placeholder="MainCategory" formControlName="mainCategory" style="width: 100%;">
+                  <option value=""></option>
                   <ng-container *ngFor="let mainCategory of budgetCategories">
                     <option id="{{mainCategory.payload.doc.id}}"  [value]="mainCategory.payload.doc.data().main_category">{{mainCategory.payload.doc.data().main_category}}</option>
                   </ng-container>
@@ -55,6 +56,7 @@
               <ng-container>
                 <mat-select class="transaction-input-style">
                   <select matInput style="min-width: 200px;" id="subCategory" class="transaction-input-style" placeholder="Subcategory" formControlName="subCategory">
+                    <option value=""></option>
                     <ng-container *ngFor="let subCategory of subCategories">
                       <option id="{{subCategory.payload.doc.id}}}" [value]="subCategory.payload.doc.data().category">{{subCategory.payload.doc.data().category}}</option>
                     </ng-container>
