@@ -109,15 +109,16 @@
             </td>
             <td>
               <mat-input>
-                <!--<div class="input-group-prepend" style="margin-left: 5px">-->
-                <!--<span class="input-group-text">$</span>-->
-                <!--</div>-->
-                <input type="text" [value]="transactionForm.get('transactionAmount').value" (change)="updateAmount($event.target['value'])" min="0" step=".01" class="transaction-input-style" placeholder="0.00" formControlName="transactionAmount">
+                <div class="input-group-prepend" style="margin-left: 5px">
+                  <span class="transaction-input-style input-group-text" style="font-size: 12px;" id="dollar-addon-1">$</span>
+                <input type="text" [value]="transactionForm.get('transactionAmount').value" (change)="updateAmount($event.target['value'])" min="0" step=".01" class="transaction-input-style" placeholder="0.00" formControlName="transactionAmount"
+                aria-describedby="dollar-addon-1" aria-label="0.00">
+              </div>
               </mat-input>
             </td>
             <td>
               <mat-form-field>
-                <input matInput type="text" style="font-size: 20px" [matDatepicker]="picker" placeholder="Choose a date" class="transaction-input-style" formControlName="transactionDate">
+                <input matInput type="text" style="font-size: 20px;" [matDatepicker]="picker" placeholder="Choose a date" class="transaction-input-style" formControlName="transactionDate">
                 <mat-datepicker-toggle style="size: 25px" matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>

@@ -61,11 +61,7 @@ export class UpdateAccountComponent implements OnInit {
   }
 
   getAccountList() {
-    return this.firebaseService.getAccountTypes().subscribe( resp => {
-      let tempList = resp;
-      this.accountTypeList = tempList;
-      console.log(this.accountTypeList);
-    });
+    this.accountTypeList = this.firebaseService.getAccountTypes();
   }
 
   getRouteData() {

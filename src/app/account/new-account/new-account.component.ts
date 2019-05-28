@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {accountTypes} from '../../Common/Globals/AccountTypes';
 import {FirebaseObjectObservable} from '@angular/fire/database-deprecated';
 import {Observable} from 'rxjs';
+import { AccountType } from '../../Common/models/account-type';
 
 @Component({
   selector: 'app-new-account',
@@ -15,7 +16,7 @@ import {Observable} from 'rxjs';
 export class NewAccountComponent implements OnInit {
 
   accountForm: FormGroup;
-  accountTypeList: Array<any>;
+  accountTypeList: Array<AccountType>;
   validationMessages = {
     'accountName': [
       { type: 'required', message: 'Account Name is required'}
@@ -43,12 +44,7 @@ export class NewAccountComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-
-    this.firebaseService.getAccountTypes().subscribe( resp => {
-      let tempList = resp;
-      this.accountTypeList = tempList;
-      console.log(this.accountTypeList);
-    });
+    this.accountTypeList = this.firebaseService.getAccountTypes();
 
 
   }
@@ -77,15 +73,15 @@ export class NewAccountComponent implements OnInit {
 
   onSubmit(value) {
     for(let accountType of this.accountTypeList){
-      if(accountType['type'] === value.accountType){
-        value.toDebit = accountType['toDebit'];
-        value.fromDebit = accountType['fromDebit'];
-        value.toDeposit = accountType['toDeposit'];
-        value.fromDeposit = accountType['fromDeposit'];
-        value.toPayment = accountType['toPayment'];
-        value.fromPayment = accountType['fromPayment'];
-        value.toTransfer = accountType['toTransfer'];
-        value.fromTransfer = accountType['fromTransfer'];
+      if(accountType.type === value.accountType){
+        value.toDebit = accountType.toDebit;
+        value.fromDebit = accountType.fromDebit;
+        value.toDeposit = accountType.toDeposit;
+        value.fromDeposit = accountType.fromDeposit;
+        value.toPayment = accountType.toPayment;
+        value.fromPayment = accountType.fromPayment;
+        value.toTransfer = accountType.toTransfer;
+        value.fromTransfer = accountType.fromTransfer;
         value.currentBalance = parseFloat(value.currentBalance);
       }
     }

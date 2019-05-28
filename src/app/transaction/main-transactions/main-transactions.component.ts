@@ -54,9 +54,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   ngOnInit() {
     this.createForm();
     this.accountList = this.firebaseService.getAccounts();
-    this.firebaseService.getTransactionTypes().subscribe( resp => {
-      this.transactionTypes = resp;
-    });
+    this.transactionTypes = this.firebaseService.getTransactionTypes();
     this.getMainCategories();
   }
 
@@ -124,7 +122,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   }
 
   updateAmount($event) {
-    this.transactionForm.get('transactionAmount').setValue(this.currencyPipe.transform($event, 'USD', 'symbol', '0.2-2'));
+    this.transactionForm.get('transactionAmount').setValue(this.currencyPipe.transform($event, 'USD', '', '0.2-2'));
   }
 
   setFromAccount(value) {

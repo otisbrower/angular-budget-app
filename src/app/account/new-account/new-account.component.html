@@ -23,7 +23,7 @@
         <div class="form-group">
           <mat-select class="input-style">
             <select matInput placeholder="Account Type" class="form-control" formControlName="accountType">
-              <option *ngFor="let accountType of accountTypeList; index as i" [value]="accountType['type']">{{accountType['type']}}</option>
+              <option *ngFor="let accountType of accountTypeList; index as i" [value]="accountType.type">{{accountType.type}}</option>
             </select>
           </mat-select>
           <ng-container *ngFor="let validation of validationMessages.accountType">

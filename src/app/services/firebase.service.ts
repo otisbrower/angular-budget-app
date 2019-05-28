@@ -5,6 +5,7 @@ import * as firebase from 'firebase/app';
 import Timestamp = firebase.firestore.Timestamp;
 import { Account } from '../Common/models/account';
 import { AccountType } from '../Common/models/account-type';
+import { TransactionType } from '../Common/models/transaction-type';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class FirebaseService implements OnInit{
 
   private accounts: Array<Account> = [];
   private accountTypes: Array<AccountType> = [];
+  private transactionTypes: Array<TransactionType> = [];
   
   constructor(public db: AngularFirestore,
               public datePipe: DatePipe) {}
@@ -24,6 +26,7 @@ export class FirebaseService implements OnInit{
   startService(){
     this.retrieveAccounts();
     this.retrieveAccountTypes();
+    this.retrieveTransactionTypes();
   }
 
   retrieveAccounts() {
@@ -49,6 +52,18 @@ export class FirebaseService implements OnInit{
         }
       }
     })
+  }
+
+  retrieveTransactionTypes(){
+    return this.db.collection('transaction_type').snapshotChanges().subscribe( resp => {
+      if(resp){
+        for(let type of resp){
+          let item = type.payload.doc.data() as TransactionType;
+          item.id = type.payload.doc.id;
+          this.transactionTypes.push(item);
+        }
+      }
+    });
   }
   getAvatars(){
     return this.db.collection('/avatar').valueChanges()
@@ -169,7 +184,7 @@ export class FirebaseService implements OnInit{
   }
 
   getTransactionTypes() {
-    return this.db.collection('transaction_type').valueChanges();
+    return this.transactionTypes;
   }
   getBudgetCategoryTypes(flag?: boolean) {
     if(flag === undefined){

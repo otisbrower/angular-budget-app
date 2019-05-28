@@ -50,26 +50,11 @@ export class AccountListComponent implements OnInit {
   }
 
   rangeChange(event){
-    console.log(event.value);
-    console.log(this.filtered_accounts.length);
-    this.filtered_accounts = this.accounts.filter(item => item.accountName.toLowerCase().includes(event.value));
-    console.log(this.filtered_accounts.length);
-
+    this.filtered_accounts = this.accounts.filter(item => item.accountName.toLowerCase().includes(event));
   }
 
 
-  combineLists(a, b){
-    let result = [];
-
-    a.filter(x => {
-      return b.filter(x2 =>{
-        if(x2.payload.doc.id == x.payload.doc.id){
-          result.push(x2);
-        }
-      });
-    });
-    return result;
-  }
+  
 
   sanitize(asset: string){
     for(var item in this.icons){
