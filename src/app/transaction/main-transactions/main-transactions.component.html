@@ -56,7 +56,7 @@
               <ng-container>
                 <mat-select class="transaction-input-style">
                   <select matInput style="min-width: 200px;" id="subCategory" class="transaction-input-style" placeholder="Subcategory" formControlName="subCategory">
-                    <option value=""></option>
+                    <option value=""> </option>
                     <ng-container *ngFor="let subCategory of subCategories">
                       <option id="{{subCategory.payload.doc.id}}}" [value]="subCategory.payload.doc.data().category">{{subCategory.payload.doc.data().category}}</option>
                     </ng-container>
@@ -69,6 +69,7 @@
                 <ng-container>
                   <mat-select class="transaction-input-style">
                     <select matInput style="min-width: 250px" id="fromAccountSelect" class="transaction-input-style" placeholder="From Account" formControlName="fromAccountID" [attr.required]="transactionForm?.get('transactionType').value !== 'Deposit'">
+                      <option value=""> </option>
                       <ng-container *ngFor="let account of fromAccounts">
                         <option [value]="account.payload.doc.id">{{account.payload.doc.data().accountName}}</option>
                       </ng-container>
@@ -87,6 +88,7 @@
                 <ng-container>
                   <mat-select class="transaction-input-style">
                     <select  matInput style="min-width: 250px;" id="toAccountSelect" class="transaction-input-style" placeholder="To Account" formControlName="toAccountID" [attr.required]="transactionForm?.get('transactionType').value !== 'Debit'">
+                      <option value=""></option>
                       <ng-container *ngFor="let account of toAccounts">
                         <option [value]="account.payload.doc.id">{{account.payload.doc.data().accountName}}</option>
                       </ng-container>

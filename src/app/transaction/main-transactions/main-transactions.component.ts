@@ -132,7 +132,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   setFromAccount(value) {
     this.firebaseService.getAccount(value).subscribe(resp => {
       let item = resp.payload.data();
-      console.log(item);
+      console.log(item['accountName']);
       this.transactionForm.controls['fromAccount'].setValue(item['accountName']);
     });
   }
@@ -140,24 +140,17 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   setToAccount(value) {
     this.firebaseService.getAccount(value).subscribe( resp => {
       let item = resp.payload.data();
+      console.log(item['accountName']);
       this.transactionForm.controls['toAccount'].setValue(item['accountName']);
     })
   }
 
-  onSubmit(value){
-    console.log(value);
-    if(value.fromAccountID !== '') {
-      this.setFromAccount(value.fromAccountID);
-    }
-    if(value.toAccountID !== '') {
-      this.setToAccount(value.toAccountID);
-    }
-
+  onSubmit(value: object){
     this.firebaseService.createTransaction(value).then(resp =>{
       if(resp){
         this.transactionForm.reset();
+        alert('Transaction Added');
       }
     });
-    alert('Transaction Added');
   }
 }

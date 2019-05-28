@@ -7,8 +7,10 @@ import Timestamp = firebase.firestore.Timestamp;
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService {
+export class FirebaseService{
 
+  private accounts: object;
+  
   constructor(public db: AngularFirestore,
               public datePipe: DatePipe) {}
 
@@ -74,12 +76,23 @@ export class FirebaseService {
   }
 
   createTransaction(value) {
-    if(value.fromAccount !== ''){
-      this.updateFromAccount(value.fromAccount, value.transactionAmount);
+    console.log(value);
+    if(value.fromAccountID != '') {
+      this.updateFromAccount(value.fromAccountID, value.transactionAmount);
+      // this.getAccount(value.fromAccount).subscribe(resp => {
+      //   if(resp){
+      //     value.fromAccount = resp.payload.data()['accountName'];
+      //   }
+      // });
     }
-    if(value.toAccount !== '') {
-      this.updateToAccount(value.toAccount, value.transactionAmount);
-    }
+    // if(value.toAccountID != '') {
+    //   this.updateToAccount(value.toAccountID, value.transactionAmount);
+    //   this.getAccount(value.toAccount).subscribe(resp => {
+    //     if(resp){
+    //       value.toAccount = resp.payload.data()['accountName'];
+    //     }
+    //   })
+    // }
     return this.db.collection('transactions').add({
       userID: value.userID,
       transactionType: value.transactionType,
