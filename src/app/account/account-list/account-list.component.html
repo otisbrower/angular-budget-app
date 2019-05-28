@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-4 offset-md-1">
     <div class="input-group">
-      <input type="text" class="form-control" [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" placeholder="Search by name..." (keyup)="searchByName()">
+      <input type="text" class="form-control" placeholder="Search by name..." (change)="rangeChange($event.value)" (keyup.enter)="rangeChange($event.value)">
       <div class="input-group-append">
         <span class="input-group-text"><ion-icon class="icon" name="search"></ion-icon></span>
       </div>
@@ -10,17 +10,17 @@
 </div>
 
 <div class="list-group users-list">
-  <div *ngFor="let item of items" class="list-group-item list-group-item-action flex-column align-items-start">
-    <div class="row" [style.background]="item.payload.doc.data().currentBalance < 0 ? '#ffd3d3' : 'white'">
+  <div *ngFor="let item of filtered_accounts" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="row" [style.background]="item.currentBalance < 0 ? '#ffd3d3' : 'white'">
       <div class="col col-md-2 image-col">
-        <img class="image" [src]="sanitize(item?.payload.doc.data().accountType)">
+        <img class="image" [src]="sanitize(item.accountType)">
       </div>
       <div class="col col-md-8 text-col">
-        <h5 class="mb-1">{{item.payload.doc.data().accountType}} : {{item.payload.doc.data().accountName}}</h5>
+        <h5 class="mb-1">{{item.accountType}} : {{item.accountName}}</h5>
         <span>Balance: $</span>
-        <span [style.color]="item.payload.doc.data().currentBalance < 0 ? '#ff0000' : 'black'">{{item.payload.doc.data().currentBalance}}</span>
+        <span [style.color]="item.currentBalance < 0 ? '#ff0000' : 'black'">{{item.currentBalance}}</span>
         <div>
-          <span>Account Key: {{item.payload.doc.id}}</span>
+          <span>Account Key: {{item.monthEndBalance}}</span>
         </div>
       </div>
       <div class="col col-md-2 actions-col">

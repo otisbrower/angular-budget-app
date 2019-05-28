@@ -1,19 +1,55 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {DatePipe} from '@angular/common';
 import * as firebase from 'firebase/app';
 import Timestamp = firebase.firestore.Timestamp;
+import { Account } from '../Common/models/account';
+import { AccountType } from '../Common/models/account-type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService{
+export class FirebaseService implements OnInit{
 
-  private accounts: object;
+  private accounts: Array<Account> = [];
+  private accountTypes: Array<AccountType> = [];
   
   constructor(public db: AngularFirestore,
               public datePipe: DatePipe) {}
 
+  ngOnInit(){
+    this.retrieveAccounts();
+  }
+
+  startService(){
+    this.retrieveAccounts();
+    this.retrieveAccountTypes();
+  }
+
+  retrieveAccounts() {
+    this.db.collection('accounts').snapshotChanges().subscribe(resp => {
+      if(resp){
+        for(let account of resp) {
+          let item = account.payload.doc.data() as Account;
+          item.id = account.payload.doc.id;
+          this.accounts.push(item);
+          console.log(item);
+        }
+      }
+    });
+  }
+
+  retrieveAccountTypes(){
+    return this.db.collection('account_type').snapshotChanges().subscribe(resp => {
+      if(resp){
+        for(let type of resp){
+          let item = type.payload.doc.data() as AccountType;
+          item.id = type.payload.doc.id;
+          this.accountTypes.push(item);
+        }
+      }
+    })
+  }
   getAvatars(){
     return this.db.collection('/avatar').valueChanges()
   }
@@ -125,11 +161,11 @@ export class FirebaseService{
   }
 
   getAccounts(){
-    return this.db.collection('accounts').snapshotChanges();
+    return this.accounts;
   }
 
   getAccountTypes() {
-    return this.db.collection('account_type').valueChanges();
+    return this.accountTypes;
   }
 
   getTransactionTypes() {

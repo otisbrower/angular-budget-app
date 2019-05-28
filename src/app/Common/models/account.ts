@@ -1,4 +1,5 @@
 export class Account {
+    id: string;
     accountName: string;
     accountType: string;
     currentBalance: number;

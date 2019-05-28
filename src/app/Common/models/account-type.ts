@@ -1,4 +1,5 @@
 export class AccountType {
+    id: string;
     fromDebit: boolean;
     fromDeposit: boolean;
     fromPayment: boolean;

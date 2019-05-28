@@ -30,13 +30,15 @@ export class HomeComponent implements OnInit {
   }
 
   getAccounts(){
-    this.firebaseService.getAccounts()
-      .subscribe(result => {
-        this.items = result;
-        this.age_filtered_items = result;
-        this.name_filtered_items = result;
-        // console.log(this.items);
-      })
+    // this.firebaseService.getAccounts()
+    //   .subscribe(result => {
+    //     this.items = result;
+    //     this.age_filtered_items = result;
+    //     this.name_filtered_items = result;
+    //     // console.log(this.items);
+    //   })
+
+    this.items = this.firebaseService.getAccounts();
   }
 
   viewDetails(item){

@@ -53,9 +53,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
 
   ngOnInit() {
     this.createForm();
-    this.firebaseService.getAccounts().subscribe(resp => {
-      this.accountList = resp;
-    });
+    this.accountList = this.firebaseService.getAccounts();
     this.firebaseService.getTransactionTypes().subscribe( resp => {
       this.transactionTypes = resp;
     });

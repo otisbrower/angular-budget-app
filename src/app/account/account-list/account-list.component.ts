@@ -5,6 +5,9 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {forEach} from '@angular/router/src/utils/collection';
 import {FirebaseObjectObservable} from '@angular/fire/database-deprecated';
 
+import { Account } from '../../Common/models/account';
+import { AccountType } from '../../Common/models/account-type';
+
 @Component({
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
@@ -14,10 +17,9 @@ export class AccountListComponent implements OnInit {
 
   ageValue: number = 0;
   searchValue: string = "";
-  items: Array<any>;
-  age_filtered_items: Array<any>;
-  name_filtered_items: Array<any>;
-  icons: object;
+  accounts: Array<Account>;
+  filtered_accounts: Array<Account>;
+  icons: Array<AccountType>;
 
   constructor(
     public firebaseService: FirebaseService,
@@ -27,26 +29,16 @@ export class AccountListComponent implements OnInit {
 
   ngOnInit() {
     this.getAccounts();
-    this.firebaseService.getAccountTypes().subscribe(resp => {
-      this.icons = resp;
-      if(this.icons){
-        console.log(this.icons);
-      }
-    })
+    this.icons = this.firebaseService.getAccountTypes();
   }
 
   getAccounts(){
-    this.firebaseService.getAccounts()
-      .subscribe(result => {
-        this.items = result;
-        this.age_filtered_items = result;
-        this.name_filtered_items = result;
-        console.log(this.items);
-      })
+    this.accounts = this.firebaseService.getAccounts();
+    this.filtered_accounts = this.firebaseService.getAccounts();
   }
 
   viewDetails(item){
-    this.router.navigate(['/updateAccount/'+ item.payload.doc.id]);
+    this.router.navigate(['/updateAccount/'+ item.id]);
   }
 
   capitalizeFirstLetter(value){
@@ -54,21 +46,17 @@ export class AccountListComponent implements OnInit {
   }
 
   searchByName(){
-    let value = this.searchValue.toLowerCase();
-    this.firebaseService.searchAccounts(value)
-      .subscribe(result => {
-        this.name_filtered_items = result;
-        this.items = this.combineLists(result, this.age_filtered_items);
-      })
+
   }
 
   rangeChange(event){
-    this.firebaseService.searchUsersByAge(event.value)
-      .subscribe(result =>{
-        this.age_filtered_items = result;
-        this.items = this.combineLists(result, this.name_filtered_items);
-      })
+    console.log(event.value);
+    console.log(this.filtered_accounts.length);
+    this.filtered_accounts = this.accounts.filter(item => item.accountName.toLowerCase().includes(event.value));
+    console.log(this.filtered_accounts.length);
+
   }
+
 
   combineLists(a, b){
     let result = [];
