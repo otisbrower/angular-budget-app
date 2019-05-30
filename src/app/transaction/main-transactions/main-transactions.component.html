@@ -4,26 +4,30 @@
   <div class="page-content">
     <ng-container *ngIf="transactionForm">
       <form class="create-form form-inline" [formGroup]="transactionForm" #registerForm="ngForm" (ngSubmit)="onSubmit(transactionForm.value)" novalidate style="margin-left: 15px;">
-        <table class="transaction-table">
-          <th>Transaction Type</th>
-          <th style="min-width: 200px; max-width: 200px;">Main Category</th>
-          <th style="min-width: 200px; max-width: 200px;">Subcategory</th>
-          <ng-container *ngIf="transactionForm?.getRawValue()['transactionType'] !== 'Deposit'; else isDeposit1">
-            <th style="min-width: 250px">From Account</th>
-          </ng-container>
-          <ng-template #isDeposit1>
-            <th style="min-width: 250px"></th>
-          </ng-template>
-          <ng-container *ngIf="transactionForm?.get('transactionType').value !== 'Debit'; else isDebit1">
-            <th>To Account</th>
-          </ng-container>
-          <ng-template #isDebit1>
-            <th style="min-width: 250px"></th>
-          </ng-template>
-          <th style="width: 80%">Description</th>
-          <th style="width: 15%">Amount</th>
-          <th>Transaction Date</th>
-          <th></th>
+        <table class="transaction-table table">
+          <thead>
+            <tr>
+              <th>Transaction Type</th>
+              <th style="min-width: 200px; max-width: 200px;">Category</th>
+              <th style="min-width: 200px; max-width: 200px;">Subcategory</th>
+              <ng-container *ngIf="transactionForm?.getRawValue()['transactionType'] !== 'Deposit'; else isDeposit1">
+                <th style="min-width: 250px">From Account</th>
+              </ng-container>
+              <ng-template #isDeposit1>
+                <th style="min-width: 250px"></th>
+              </ng-template>
+              <ng-container *ngIf="transactionForm?.get('transactionType').value !== 'Debit'; else isDebit1">
+                <th>To Account</th>
+              </ng-container>
+              <ng-template #isDebit1>
+                <th style="min-width: 250px"></th>
+              </ng-template>
+              <th style="width: 80%">Description</th>
+              <th style="width: 15%">Amount</th>
+              <th>Transaction Date</th>
+              <th></th>
+            </tr>
+          </thead>
           <tr>
             <td>
             <ng-container  #selectedTransType class="form-group" *ngIf="transactionTypes">

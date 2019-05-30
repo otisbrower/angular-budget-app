@@ -1,6 +1,7 @@
 import { Timestamp } from 'rxjs/internal/operators/timestamp';
 
 export class Transaction {
+    id: string;
     createDate: string;
     description: string;
     fromAccount: string;
@@ -10,7 +11,7 @@ export class Transaction {
     toAccount: string;
     toAccountID: string;
     transactionAmount: string;
-    tranactionDate: object;
+    transactionDate: object;
     transactionType: string;
     userID: string;
 }

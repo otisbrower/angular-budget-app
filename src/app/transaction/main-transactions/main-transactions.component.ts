@@ -80,13 +80,11 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   }
 
   onCategorySelect(mainCategory){
-    console.log(mainCategory);
     for(let mainCat of this.budgetCategories){
       if (mainCat.payload.doc.data().main_category === mainCategory){
         this.firebaseService.getBudgetSubcategory(mainCat.payload.doc.id).subscribe( resp => {
           this.subCategories = resp;
           for(let cat of this.subCategories){
-          console.log(cat.payload.doc.data().category);
           }
         })
       }
@@ -125,23 +123,20 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
     this.transactionForm.get('transactionAmount').setValue(this.currencyPipe.transform($event, 'USD', '', '0.2-2'));
   }
 
-  setFromAccount(value) {
-    this.firebaseService.getAccount(value).subscribe(resp => {
-      let item = resp.payload.data();
-      console.log(item['accountName']);
-      this.transactionForm.controls['fromAccount'].setValue(item['accountName']);
-    });
-  }
-
-  setToAccount(value) {
-    this.firebaseService.getAccount(value).subscribe( resp => {
-      let item = resp.payload.data();
-      console.log(item['accountName']);
-      this.transactionForm.controls['toAccount'].setValue(item['accountName']);
-    })
+  setFromToAccounts(value: string) {
+    for(let account of this.accountList){
+      if(account.id === value) {
+        return account.accountName;
+      }
+    }
+    return '';
   }
 
   onSubmit(value: object){
+    console.log(value);
+    // this.setFromToAccounts(value['fromAccountID'], value['toAccountID']);
+    value['fromAccount'] = this.setFromToAccounts(value['fromAccountID']);
+    value['toAccount'] = this.setFromToAccounts(value['toAccountID']);
     this.firebaseService.createTransaction(value).then(resp =>{
       if(resp){
         this.transactionForm.reset();

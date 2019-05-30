@@ -6,6 +6,7 @@ import Timestamp = firebase.firestore.Timestamp;
 import { Account } from '../Common/models/account';
 import { AccountType } from '../Common/models/account-type';
 import { TransactionType } from '../Common/models/transaction-type';
+import {Transaction} from '../Common/models/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,9 @@ export class FirebaseService implements OnInit{
   private accounts: Array<Account> = [];
   private accountTypes: Array<AccountType> = [];
   private transactionTypes: Array<TransactionType> = [];
-  
+  private transactionList: Array<Transaction> = [];
+  private categoryList: Array<any> = [];
+
   constructor(public db: AngularFirestore,
               public datePipe: DatePipe) {}
 
@@ -27,6 +30,8 @@ export class FirebaseService implements OnInit{
     this.retrieveAccounts();
     this.retrieveAccountTypes();
     this.retrieveTransactionTypes();
+    this.retrieveTransactionList();
+    this.retrieveBudgetCategories();
   }
 
   retrieveAccounts() {
@@ -36,7 +41,6 @@ export class FirebaseService implements OnInit{
           let item = account.payload.doc.data() as Account;
           item.id = account.payload.doc.id;
           this.accounts.push(item);
-          console.log(item);
         }
       }
     });
@@ -65,8 +69,28 @@ export class FirebaseService implements OnInit{
       }
     });
   }
-  getAvatars(){
-    return this.db.collection('/avatar').valueChanges()
+
+  retrieveTransactionList(){
+    this.db.collection('transactions', ref => ref.orderBy('transactionDate', 'desc'))
+      .snapshotChanges().subscribe( resp => {
+        if(resp){
+          for(let trans of resp){
+            let item = trans.payload.doc.data() as Transaction;
+            item.id = trans.payload.doc.id;
+            this.transactionList.push(item);
+          }
+        }
+    });
+  }
+
+  retrieveBudgetCategories(){
+    this.db.collection('budget_categories').snapshotChanges().subscribe(resp => {
+      if(resp){
+        for(let cat of resp){
+          console.log(cat.payload.doc.data());
+        }
+      }
+    })
   }
 
   getUser(userKey){
@@ -75,13 +99,6 @@ export class FirebaseService implements OnInit{
 
   getAccount(accountKey) {
     return this.db.collection('accounts').doc(accountKey).snapshotChanges();
-  }
-
-  getCategorybyId(isSub: boolean, docKey: string, mainKey?: string){
-    if(isSub){
-      return this.db.collection('budget_categories').doc(mainKey).ref.collection('subCategory').doc(docKey).get();
-    }
-    this.db.collection('budget_categories').doc(docKey).snapshotChanges();
   }
 
   updateUser(userKey, value){
@@ -130,20 +147,11 @@ export class FirebaseService implements OnInit{
     console.log(value);
     if(value.fromAccountID != '') {
       this.updateFromAccount(value.fromAccountID, value.transactionAmount);
-      // this.getAccount(value.fromAccount).subscribe(resp => {
-      //   if(resp){
-      //     value.fromAccount = resp.payload.data()['accountName'];
-      //   }
-      // });
     }
-    // if(value.toAccountID != '') {
-    //   this.updateToAccount(value.toAccountID, value.transactionAmount);
-    //   this.getAccount(value.toAccount).subscribe(resp => {
-    //     if(resp){
-    //       value.toAccount = resp.payload.data()['accountName'];
-    //     }
-    //   })
-    // }
+    if(value.toAccountID !== ''){
+      this.updateToAccount(value.toAccountID, value.transactionAmount);
+    }
+
     return this.db.collection('transactions').add({
       userID: value.userID,
       transactionType: value.transactionType,
@@ -151,7 +159,7 @@ export class FirebaseService implements OnInit{
       subCategory: value.subCategory,
       fromAccount: value.fromAccount,
       toAccount: value.toAccount,
-      transactionAmount: value.transactionAmount,
+      transactionAmount: value.transactionAmount.replace('$', '') as number,
       createDate: new Date().getDate(),
       transactionDate: value.transactionDate,
       description: value.description
@@ -213,11 +221,10 @@ export class FirebaseService implements OnInit{
     return this.db.collection('accounts', ref => ref.where(searchPath, '==', true)).snapshotChanges();
   }
 
-  getRecentTransactions(days: number){
-    let range = new Date().getTime() - (days * 24* 60 * 60 * 1000);
-    console.log(range);
-    let searchDate = Timestamp.fromMillis(range);
-    return this.db.collection('transactions', ref => ref.where('transactionDate', '>', searchDate).orderBy('transactionDate', 'desc')).snapshotChanges();
+  getRecentTransactions(){
+
+
+    return this.transactionList;
   }
 
 }

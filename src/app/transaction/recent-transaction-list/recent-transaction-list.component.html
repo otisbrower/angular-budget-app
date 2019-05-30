@@ -9,29 +9,33 @@
     </select>
   </span>
 </h6>
-<table>
-  <tr>
-    <th>Transaction ID</th>
-    <th>Transaction Type</th>
-    <th>Transaction Date</th>
-    <th>Category</th>
-    <th>Subcategory</th>
-    <th>From Account</th>
-    <th>To Account</th>
-    <th>Amount</th>
-  </tr>
-  <ng-container *ngIf="transactionList">
-    <ng-container *ngFor="let transaction of transactionList">
-      <tr>
-        <td>{{transaction.payload.doc.id}}</td>
-        <td>{{transaction.payload.doc.data().transactionType}}</td>
-        <td>{{transaction.payload.doc.data().transactionDate.seconds*1000 | date: 'MM/dd/yyyy'}}</td>
-        <td>{{transaction.payload.doc.data().mainCategory}}</td>
-        <td>{{transaction.payload.doc.data().subCategory}}</td>
-        <td>{{transaction.payload.doc.data().fromAccount}}</td>
-        <td>{{transaction.payload.doc.data().toAccount}}</td>
-        <td>{{transaction.payload.doc.data().transactionAmount}}</td>
-      </tr>
+<table class="table transaction-table">
+  <thead class="thead-dark">
+    <tr>
+      <th style="width: 7%">Transaction Type</th>
+      <th style="width: 7%">Transaction Date</th>
+      <th style="width: 10%">Category</th>
+      <th style="width: 10%">Subcategory</th>
+      <th style="width: 10%">From Account</th>
+      <th style="width: 10%">To Account</th>
+      <th>Description</th>
+      <th style="width: 7%">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="transactionList">
+      <ng-container *ngFor="let transaction of transactionList">
+        <tr>
+          <td>{{transaction.transactionType}}</td>
+          <td>{{transaction.transactionDate.seconds*1000 | date: 'MM/dd/yyyy'}}</td>
+          <td>{{transaction.mainCategory}}</td>
+          <td>{{transaction.subCategory}}</td>
+          <td>{{transaction.fromAccount}}</td>
+          <td>{{transaction.toAccount}}</td>
+          <td style="text-align: left">{{transaction.description}}</td>
+          <td>${{transaction.transactionAmount}}</td>
+        </tr>
+      </ng-container>
     </ng-container>
-  </ng-container>
+  </tbody>
 </table>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FirebaseService} from '../../services/firebase.service';
 import { DatePipe} from '@angular/common';
+import {Transaction} from '../../Common/models/transaction';
+// import Timestamp = firebase.firestore.Timestamp;
 
 @Component({
   selector: 'app-recent-transaction-list',
@@ -10,23 +12,25 @@ import { DatePipe} from '@angular/common';
 export class RecentTransactionListComponent implements OnInit {
   historyDays = [5, 15, 30, 60, 90];
 
-  transactionList: Array<any>;
+  transactionList: Array<Transaction>;
+  filteredTransactionList: Array<Transaction>;
 
   constructor(private firebaseService: FirebaseService,
               public datePipe: DatePipe) { }
 
   ngOnInit() {
+    this.getTransactions();
     this.onSelectDateRange(30);
   }
 
-  onSelectDateRange(days){
-    this.firebaseService.getRecentTransactions(days).subscribe(resp => {
-      this.transactionList = resp;
+  getTransactions(){
+    this.transactionList = this.firebaseService.getRecentTransactions();
+    this.filteredTransactionList = this.firebaseService.getRecentTransactions();
 
-      // for(let transaction of this.transactionList){
-      //   console.log(transaction.payload.doc.data());
-      // }
-    });
+  }
+  onSelectDateRange(days){
+    let range = new Date().getTime() - (days * 24* 60 * 60 * 1000);
+    // let searchDate = Timestamp.fromMillis(range);
   }
 
 }

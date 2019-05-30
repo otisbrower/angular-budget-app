@@ -4,9 +4,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { AvatarDialogComponent } from './avatar-dialog/avatar-dialog.component';
-import { EditUserComponent } from './edit-user/edit-user.component';
-import { EditUserResolver } from './edit-user/edit-user.resolver';
 import { NewUserComponent } from './new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 
@@ -39,8 +36,6 @@ import { RecentTransactionListComponent } from './transaction/recent-transaction
 @NgModule({
   declarations: [
     AppComponent,
-    AvatarDialogComponent,
-    EditUserComponent,
     NewUserComponent,
     HomeComponent,
     NewAccountComponent,
@@ -52,7 +47,7 @@ import { RecentTransactionListComponent } from './transaction/recent-transaction
     CurrencyMaskPipe,
     RecentTransactionListComponent
   ],
-  entryComponents: [AvatarDialogComponent],
+  entryComponents: [],
   imports: [
     BrowserModule,
     FormsModule,
@@ -71,7 +66,6 @@ import { RecentTransactionListComponent } from './transaction/recent-transaction
   ],
   providers: [
     FirebaseService,
-    EditUserResolver,
     CurrencyPipe,
     DatePipe,
     {provide: MAT_DATE_LOCALE, useValue:'en-US'}
