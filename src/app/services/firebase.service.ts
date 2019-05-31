@@ -7,6 +7,8 @@ import { Account } from '../Common/models/account';
 import { AccountType } from '../Common/models/account-type';
 import { TransactionType } from '../Common/models/transaction-type';
 import {Transaction} from '../Common/models/transaction';
+import {AngularFireDatabase} from '@angular/fire/database';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +16,14 @@ import {Transaction} from '../Common/models/transaction';
 export class FirebaseService implements OnInit{
 
   private accounts: Array<Account> = [];
-  private accountTypes: Array<AccountType> = [];
+  private accountTypes: object;
   private transactionTypes: Array<TransactionType> = [];
   private transactionList: Array<Transaction> = [];
   private categoryList: Array<any> = [];
 
   constructor(public db: AngularFirestore,
-              public datePipe: DatePipe) {}
+              public datePipe: DatePipe,
+              public db2: AngularFireDatabase) {}
 
   ngOnInit(){
     this.retrieveAccounts();
@@ -47,15 +50,19 @@ export class FirebaseService implements OnInit{
   }
 
   retrieveAccountTypes(){
-    return this.db.collection('account_type').snapshotChanges().subscribe(resp => {
-      if(resp){
-        for(let type of resp){
-          let item = type.payload.doc.data() as AccountType;
-          item.id = type.payload.doc.id;
-          this.accountTypes.push(item);
-        }
-      }
-    })
+    this.db2.object('/account_type').query.once('value').then(resp => {
+      this.accountTypes = resp.val();
+      console.log(this.accountTypes);
+    });
+    // this.db.collection('account_type').snapshotChanges().subscribe(resp => {
+    //   if(resp){
+    //     for(let type of resp){
+    //       let item = type.payload.doc.data() as AccountType;
+    //       item.id = type.payload.doc.id;
+    //       this.accountTypes.push(item);
+    //     }
+    //   }
+    // })
   }
 
   retrieveTransactionTypes(){
@@ -84,10 +91,15 @@ export class FirebaseService implements OnInit{
   }
 
   retrieveBudgetCategories(){
+    this.db2.list('/budget_categories').query.once('value').then(resp => {
+      console.log(resp.val());
+    });
     this.db.collection('budget_categories').snapshotChanges().subscribe(resp => {
       if(resp){
         for(let cat of resp){
-          console.log(cat.payload.doc.data());
+          let item = cat.payload.doc.data();
+          item['id'] = cat.payload.doc.id;
+          // console.log(cat.payload.doc.data());
         }
       }
     })

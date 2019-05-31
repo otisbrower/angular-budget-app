@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterContentChecked, Component, OnInit} from '@angular/core';
 import {FirebaseService} from '../../services/firebase.service';
 import {Router} from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -13,12 +13,13 @@ import { AccountType } from '../../Common/models/account-type';
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss']
 })
-export class AccountListComponent implements OnInit {
+export class AccountListComponent implements OnInit{
 
   ageValue: number = 0;
   searchValue: string = "";
   accounts: Array<Account>;
   filtered_accounts: Array<Account>;
+  accountTypes: object;
   icons: Array<AccountType>;
 
   constructor(
@@ -29,8 +30,10 @@ export class AccountListComponent implements OnInit {
 
   ngOnInit() {
     this.getAccounts();
-    this.icons = this.firebaseService.getAccountTypes();
+    this.accountTypes = this.firebaseService.getAccountTypes();
+    console.log(this.accountTypes['401K']['image']);
   }
+
 
   getAccounts(){
     this.accounts = this.firebaseService.getAccounts();
@@ -54,14 +57,9 @@ export class AccountListComponent implements OnInit {
   }
 
 
-  
+
 
   sanitize(asset: string){
-    for(var item in this.icons){
-      if(this.icons[item]['type'] === asset){
-        return this.icons[item]['image'];
-      }
-    }
-    return null;
+    return this.accountTypes[asset]['image'];
   }
 }

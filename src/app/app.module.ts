@@ -31,6 +31,7 @@ import { MainTransactionsComponent } from './transaction/main-transactions/main-
 import { CurrencyMaskPipe } from './Common/Globals/currency-mask.pipe';
 import {CurrencyPipe, DatePipe} from '@angular/common';
 import { RecentTransactionListComponent } from './transaction/recent-transaction-list/recent-transaction-list.component';
+import {AngularFireDatabaseModule} from '@angular/fire/database';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { RecentTransactionListComponent } from './transaction/recent-transaction
     RouterModule.forRoot(rootRouterConfig, { useHash: false }),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireDatabaseModule,
     BrowserAnimationsModule,
     MatButtonModule,
     MatInputModule,

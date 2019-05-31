@@ -18,7 +18,7 @@
           <label>Account Type</label>
           <mat-select class="input-style">
             <select matInput placeHolder="Account Type" class="form-control" formControlName="accountType">
-              <option *ngFor="let accountType of accountTypeList; index as i" [value]="accountType['type']">{{accountType['type']}}</option>
+              <option *ngFor="let accountType of accountTypeList | keyvalue" [value]="accountType.key">{{accountType.key}}</option>
             </select>
           </mat-select>
           <ng-container *ngFor="let validation of validation_messages.accountType">
@@ -30,10 +30,11 @@
           <mat-form-field class="input-style">
             <label>Balance</label>
             <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
-            <input matInput  placeHolder="Current Balance" class="form-control currency" formControlName="currentBalance" type="number" min="0.00" step="0.01" data-number-to-fixed="2">
+              <span class="transaction-input-style input-group-text" style="font-size: 12px;" id="dollar-addon-1">$</span>
+              <input matInput  placeHolder="Current Balance" class="form-control currency transaction-input-style" formControlName="currentBalance" type="number" min="0.00" step="0.01" data-number-to-fixed="2"
+                     (change)="updateAmount($event.target['value'])">
             </div>
-          </mat-form-field>
+            </mat-form-field>
           <ng-container *ngFor="let validation of validation_messages.currentBalance">
             <mat-err *ngIf="updateForm.get('currentBalance').hasError(validation.type) && (updateform.get('currentBalance').dirty || updateForm.get('currentBalance').touched)">validation.message</mat-err>
           </ng-container>

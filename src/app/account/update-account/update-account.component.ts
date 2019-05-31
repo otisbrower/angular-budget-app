@@ -4,6 +4,7 @@ import {FirebaseService} from '../../services/firebase.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {switchMap} from 'rxjs/operators';
+import {CurrencyPipe} from '@angular/common';
 
 @Component({
   selector: 'app-update-account',
@@ -34,7 +35,8 @@ export class UpdateAccountComponent implements OnInit {
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
               private router: Router,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              private currencyPipe: CurrencyPipe) { }
 
   ngOnInit() {
     this.getRouteData();
@@ -51,7 +53,6 @@ export class UpdateAccountComponent implements OnInit {
 
   onSubmit(value) {
     value.currentBalance = Number(value.currentBalance);
-    value.accountNameToSearch = this.item.accountNameToSearch.toLowerCase();
     value.monthEndBalance = this.item.monthEndBalance;
     value.ytdDebit = this.item.ytdDebit;
     value.ytdDeposit = this.item.ytdDeposit;
@@ -75,5 +76,8 @@ export class UpdateAccountComponent implements OnInit {
       console.log(this.item);
       this.createForm();
     });
+  }
+  updateAmount($event) {
+    this.updateForm.get('currentBalance').setValue(this.currencyPipe.transform($event, 'USD', '', '0.2-2'));
   }
 }

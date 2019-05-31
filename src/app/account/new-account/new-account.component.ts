@@ -16,7 +16,8 @@ import { AccountType } from '../../Common/models/account-type';
 export class NewAccountComponent implements OnInit {
 
   accountForm: FormGroup;
-  accountTypeList: Array<AccountType>;
+  objectKeys = Object.keys;
+  accountTypeList: object;
   validationMessages = {
     'accountName': [
       { type: 'required', message: 'Account Name is required'}
@@ -44,9 +45,7 @@ export class NewAccountComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.accountTypeList = this.firebaseService.getAccountTypes();
-
-
+     this.accountTypeList = this.firebaseService.getAccountTypes();
   }
 
   createForm() {
@@ -72,19 +71,16 @@ export class NewAccountComponent implements OnInit {
   }
 
   onSubmit(value) {
-    for(let accountType of this.accountTypeList){
-      if(accountType.type === value.accountType){
-        value.toDebit = accountType.toDebit;
-        value.fromDebit = accountType.fromDebit;
-        value.toDeposit = accountType.toDeposit;
-        value.fromDeposit = accountType.fromDeposit;
-        value.toPayment = accountType.toPayment;
-        value.fromPayment = accountType.fromPayment;
-        value.toTransfer = accountType.toTransfer;
-        value.fromTransfer = accountType.fromTransfer;
-        value.currentBalance = parseFloat(value.currentBalance);
-      }
-    }
+    let accountType = this.accountTypeList[value.accountType];
+    value.toDebit = accountType.toDebit;
+    value.fromDebit = accountType.fromDebit;
+    value.toDeposit = accountType.toDeposit;
+    value.fromDeposit = accountType.fromDeposit;
+    value.toPayment = accountType.toPayment;
+    value.fromPayment = accountType.fromPayment;
+    value.toTransfer = accountType.toTransfer;
+    value.fromTransfer = accountType.fromTransfer;
+    value.currentBalance = parseFloat(value.currentBalance);
 
     console.log(value);
 
