@@ -18,6 +18,7 @@ export class NewAccountComponent implements OnInit {
   accountForm: FormGroup;
   objectKeys = Object.keys;
   accountTypeList: object;
+  accountNeg = ['Credit Card', 'Mortgage', 'Personal Loan', 'Student Loan', 'Auto Loan'];
   validationMessages = {
     'accountName': [
       { type: 'required', message: 'Account Name is required'}
@@ -71,6 +72,9 @@ export class NewAccountComponent implements OnInit {
   }
 
   onSubmit(value) {
+    if( this.accountNeg.indexOf(value.accountType) !== -1 && value.currentBalance > 0){
+      value.currentBalance = (-1) * value.currentBalance;
+    }
     let accountType = this.accountTypeList[value.accountType];
     value.toDebit = accountType.toDebit;
     value.fromDebit = accountType.fromDebit;
@@ -86,7 +90,7 @@ export class NewAccountComponent implements OnInit {
 
     this.firebaseService.createAccount(value).then(res => {
       this.resetFields();
-      this.router.navigate(['/home']);
+      this.router.navigate(['/accountList']);
       }
     );
   }

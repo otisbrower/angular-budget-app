@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {FirebaseService} from '../services/firebase.service';
 
 @Component({
   selector: 'app-bs-navbar',
@@ -8,10 +7,10 @@ import {FirebaseService} from '../services/firebase.service';
 })
 export class BsNavbarComponent implements OnInit {
 
-  constructor(public firebaseService: FirebaseService) { }
+  title = 'Budget';
+  constructor() { }
 
   ngOnInit() {
-    this.firebaseService.startService();
   }
 
 }

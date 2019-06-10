@@ -17,8 +17,8 @@ export class AccountListComponent implements OnInit{
 
   ageValue: number = 0;
   searchValue: string = "";
-  accounts: Array<Account>;
-  filtered_accounts: Array<Account>;
+  accounts: object;
+  filtered_accounts: object;
   accountTypes: object;
   icons: Array<AccountType>;
 
@@ -31,17 +31,17 @@ export class AccountListComponent implements OnInit{
   ngOnInit() {
     this.getAccounts();
     this.accountTypes = this.firebaseService.getAccountTypes();
-    console.log(this.accountTypes['401K']['image']);
   }
 
 
   getAccounts(){
     this.accounts = this.firebaseService.getAccounts();
-    this.filtered_accounts = this.firebaseService.getAccounts();
+    console.log(this.accounts);
+    this.filtered_accounts = this.accounts;
   }
 
   viewDetails(item){
-    this.router.navigate(['/updateAccount/'+ item.id]);
+    this.router.navigate(['/updateAccount/'+ item]);
   }
 
   capitalizeFirstLetter(value){
@@ -53,7 +53,12 @@ export class AccountListComponent implements OnInit{
   }
 
   rangeChange(event){
-    this.filtered_accounts = this.accounts.filter(item => item.accountName.toLowerCase().includes(event));
+    this.filtered_accounts = {};
+    for(let account in this.accounts){
+      if(this.accounts[account].toLowerCase().includes(event.toLowerCase())){
+        this.filtered_accounts[account] = this.accounts[account];
+      }
+    }
   }
 
 

@@ -87,3 +87,19 @@ table {
 .center{
   text-align: center;
 }
+
+.small-font{
+  font-size: 10px;
+}
+
+.home-frame-border{
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.center {
+  text-align: center;
+}
+
+

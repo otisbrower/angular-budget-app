@@ -2,7 +2,8 @@
   <span>Recent Transactions</span>
   <span style="float: right">
     <label for="historyDaysSelect" class="padRight20">Days:</label>
-    <select class="transaction-input-style" name="historyDaysSelect" id="historyDaysSelect" (change)="onSelectDateRange($event.target['value'])">
+    <select class="transaction-input-style" name="historyDaysSelect" id="historyDaysSelect" (change)="onSelectDateRange($event.target['value']); days = $event.target['value']">
+      <option></option>
       <ng-container *ngFor="let days of historyDays">
         <option value="{{days}}">{{days}}</option>
       </ng-container>
@@ -23,17 +24,17 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="transactionList">
-      <ng-container *ngFor="let transaction of transactionList">
+    <ng-container *ngIf="filteredTransactionList">
+      <ng-container *ngFor="let transaction of filteredTransactionList | keyvalue">
         <tr>
-          <td>{{transaction.transactionType}}</td>
-          <td>{{transaction.transactionDate.seconds*1000 | date: 'MM/dd/yyyy'}}</td>
-          <td>{{transaction.mainCategory}}</td>
-          <td>{{transaction.subCategory}}</td>
-          <td>{{transaction.fromAccount}}</td>
-          <td>{{transaction.toAccount}}</td>
-          <td style="text-align: left">{{transaction.description}}</td>
-          <td>${{transaction.transactionAmount}}</td>
+          <td>{{transaction.value['transactionType']}}</td>
+          <td>{{transaction.value['transactionDate'].seconds*1000 | date: 'MM/dd/yyyy'}}</td>
+          <td>{{transaction.value['mainCategory']}}</td>
+          <td>{{transaction.value['subCategory']}}</td>
+          <td>{{transaction.value['fromAccount']}}</td>
+          <td>{{transaction.value['toAccount']}}</td>
+          <td style="text-align: left">{{transaction.value['description']}}</td>
+          <td [style.color]="transaction.value['transactionAmount'] < 0 ?'#ff0000' : 'black' ">{{transaction.value['transactionAmount'] | currency}}</td>
         </tr>
       </ng-container>
     </ng-container>

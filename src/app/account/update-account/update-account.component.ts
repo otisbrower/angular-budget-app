@@ -16,6 +16,8 @@ export class UpdateAccountComponent implements OnInit {
   updateForm: FormGroup;
   accountTypeList: object;
   item: any;
+  accountBalance: number;
+  accountNeg = ['Credit Card', 'Mortgage', 'Personal Loan', 'Student Loan', 'Auto Loan'];
 
 
   validation_messages = {
@@ -44,6 +46,7 @@ export class UpdateAccountComponent implements OnInit {
   }
 
   createForm() {
+    this.accountBalance = this.item.currentBalance;
     this.updateForm = this.formBuilder.group({
       accountName: [this.item.accountName, Validators.required],
       accountType: [this.item.accountType, Validators.required],
@@ -52,10 +55,23 @@ export class UpdateAccountComponent implements OnInit {
   }
 
   onSubmit(value) {
+    if( this.accountNeg.indexOf(value.accountType) !== -1 && value.currentBalance > 0){
+      value.currentBalance = (-1) * value.currentBalance;
+    }
+    let accountType = this.accountTypeList[value.accountType];
+    value.toDebit = accountType.toDebit;
+    value.fromDebit = accountType.fromDebit;
+    value.toDeposit = accountType.toDeposit;
+    value.fromDeposit = accountType.fromDeposit;
+    value.toPayment = accountType.toPayment;
+    value.fromPayment = accountType.fromPayment;
+    value.toTransfer = accountType.toTransfer;
+    value.fromTransfer = accountType.fromTransfer;
     value.currentBalance = Number(value.currentBalance);
     value.monthEndBalance = this.item.monthEndBalance;
     value.ytdDebit = this.item.ytdDebit;
     value.ytdDeposit = this.item.ytdDeposit;
+    console.log(value);
     this.firebaseService.updateAccount(this.item.id, value).then( res => {
       this.router.navigate(['/accountList']);
     })
@@ -69,11 +85,9 @@ export class UpdateAccountComponent implements OnInit {
 
     let tempData = this.route.snapshot.paramMap.get('id');
 
-    console.log(tempData);
     this.firebaseService.getAccount(tempData).subscribe(resp => {
       this.item = resp.payload.data();
       this.item.id = resp.payload.id;
-      console.log(this.item);
       this.createForm();
     });
   }

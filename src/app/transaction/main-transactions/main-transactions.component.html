@@ -33,8 +33,8 @@
             <ng-container  #selectedTransType class="form-group" *ngIf="transactionTypes">
               <mat-select class="transaction-input-style">
                 <select matInput (change)="onTransactionTypeSelect($event.target['value'])" id="selectedTransType" placeholder="Transaction Type" class="transaction-input-style" formControlName="transactionType">
-                  <ng-container *ngFor="let transactionType of transactionTypes">
-                    <option [value]="transactionType.type">{{transactionType.type}}</option>
+                  <ng-container *ngFor="let transactionType of transactionTypes | keyvalue">
+                    <option [value]="transactionType.value">{{transactionType.value}}</option>
                   </ng-container>
                 </select>
               </mat-select>
@@ -49,8 +49,8 @@
               <mat-select class="transaction-input-style">
                 <select matInput #mainBudgetCategory (change)="onCategorySelect($event.target['value'])" id="mainBudgetCategory" class="transaction-input-style" placeholder="MainCategory" formControlName="mainCategory" style="width: 100%;">
                   <option value=""></option>
-                  <ng-container *ngFor="let mainCategory of budgetCategories">
-                    <option id="{{mainCategory.payload.doc.id}}"  [value]="mainCategory.payload.doc.data().main_category">{{mainCategory.payload.doc.data().main_category}}</option>
+                  <ng-container *ngFor="let mainCategory of filteredCategories | keyvalue">
+                    <option id="{{mainCategory.key}}"  [value]="mainCategory.key">{{mainCategory.key}}</option>
                   </ng-container>
                 </select>
               </mat-select>
@@ -61,8 +61,8 @@
                 <mat-select class="transaction-input-style">
                   <select matInput style="min-width: 200px;" id="subCategory" class="transaction-input-style" placeholder="Subcategory" formControlName="subCategory">
                     <option value=""> </option>
-                    <ng-container *ngFor="let subCategory of subCategories">
-                      <option id="{{subCategory.payload.doc.id}}}" [value]="subCategory.payload.doc.data().category">{{subCategory.payload.doc.data().category}}</option>
+                    <ng-container *ngFor="let subCategory of subCategories | keyvalue">
+                      <option id="{{subCategory.key}}" [value]="subCategory.value">{{subCategory.value}}</option>
                     </ng-container>
                   </select>
                 </mat-select>
@@ -74,8 +74,8 @@
                   <mat-select class="transaction-input-style">
                     <select matInput style="min-width: 250px" id="fromAccountSelect" class="transaction-input-style" placeholder="From Account" formControlName="fromAccountID" [attr.required]="transactionForm?.get('transactionType').value !== 'Deposit'">
                       <option value=""> </option>
-                      <ng-container *ngFor="let account of fromAccounts">
-                        <option [value]="account.payload.doc.id">{{account.payload.doc.data().accountName}}</option>
+                      <ng-container *ngFor="let account of fromAccounts | keyvalue">
+                        <option [value]="account.key">{{account.value['accountName']}}</option>
                       </ng-container>
                     </select>
                   </mat-select>
@@ -93,8 +93,8 @@
                   <mat-select class="transaction-input-style">
                     <select  matInput style="min-width: 250px;" id="toAccountSelect" class="transaction-input-style" placeholder="To Account" formControlName="toAccountID" [attr.required]="transactionForm?.get('transactionType').value !== 'Debit'">
                       <option value=""></option>
-                      <ng-container *ngFor="let account of toAccounts">
-                        <option [value]="account.payload.doc.id">{{account.payload.doc.data().accountName}}</option>
+                      <ng-container *ngFor="let account of toAccounts | keyvalue">
+                        <option [value]="account.key">{{account.value['accountName']}}</option>
                       </ng-container>
                     </select>
                   </mat-select>
@@ -115,7 +115,7 @@
               <mat-input>
                 <div class="input-group-prepend" style="margin-left: 5px">
                   <span class="transaction-input-style input-group-text" style="font-size: 12px;" id="dollar-addon-1">$</span>
-                <input type="text" [value]="transactionForm.get('transactionAmount').value" (change)="updateAmount($event.target['value'])" min="0" step=".01" class="transaction-input-style" placeholder="0.00" formControlName="transactionAmount"
+                <input type="number" (ngModel)="amountInput" [value]="amountInput | currency: 'USD' : '0.2-2'" (ngModelChange)="value=$event" min="0" class="transaction-input-style" placeholder="0.00" formControlName="transactionAmount"
                 aria-describedby="dollar-addon-1" aria-label="0.00">
               </div>
               </mat-input>

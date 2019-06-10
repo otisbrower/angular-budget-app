@@ -1,8 +1,9 @@
-import {AfterContentInit, AfterViewChecked, Component, Input, OnInit} from '@angular/core';
+import {AfterContentInit, Component, OnInit} from '@angular/core';
 import {FirebaseService} from '../../services/firebase.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CurrencyPipe} from '@angular/common';
-import {main} from '@angular/compiler-cli/src/main';
+import {Router} from '@angular/router';
+import {MatSnackBar} from '@angular/material';
 
 
 @Component({
@@ -14,11 +15,14 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   transactionForm: FormGroup;
   accountList: any = [];
   transactionTypes: object;
-  budgetCategories: Array<any>;
+  budgetCategories: object;
+  filteredCategories: object = {};
   subCategories: Array<any>;
-  fromAccounts: Array<any>;
-  toAccounts: Array<any>;
+  fromAccounts: object;
+  toAccounts: object;
   debitDepositFlag: boolean = false;
+  amountInput = 0.00;
+
 
   validateMessages = {
     'transactionType': [
@@ -47,15 +51,17 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
     ]
   };
 
-  constructor(private firebaseService: FirebaseService,
+  constructor(public firebaseService: FirebaseService,
               private formBuilder: FormBuilder,
-              private currencyPipe: CurrencyPipe) { }
+              private currencyPipe: CurrencyPipe,
+              private router: Router,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.createForm();
     this.accountList = this.firebaseService.getAccounts();
     this.transactionTypes = this.firebaseService.getTransactionTypes();
-    this.getMainCategories();
+    this.budgetCategories = this.firebaseService.getBudgetCategoryTypes();
   }
 
   ngAfterContentInit() {
@@ -72,7 +78,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
       fromAccountID: new FormControl(''),
       toAccount: new FormControl(''),
       toAccountID: new FormControl(''),
-      transactionAmount: new FormControl( '', Validators.required),
+      transactionAmount: new FormControl( 0.00, Validators.required),
       createDate: new FormControl(''),
       transactionDate: new FormControl('', Validators.required),
       description: new FormControl('', Validators.required)
@@ -80,21 +86,7 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   }
 
   onCategorySelect(mainCategory){
-    for(let mainCat of this.budgetCategories){
-      if (mainCat.payload.doc.data().main_category === mainCategory){
-        this.firebaseService.getBudgetSubcategory(mainCat.payload.doc.id).subscribe( resp => {
-          this.subCategories = resp;
-          for(let cat of this.subCategories){
-          }
-        })
-      }
-    }
-  }
-
-  getMainCategories(flag: boolean = false) {
-    this.firebaseService.getBudgetCategoryTypes(flag).subscribe(resp => {
-      this.budgetCategories = resp;
-    });
+    this.subCategories = this.budgetCategories[mainCategory];
   }
 
   onTransactionTypeSelect(type) {
@@ -111,12 +103,42 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
     } else {
       this.debitDepositFlag = false;
     }
+    if(type === 'Transfer'){
+      this.filteredCategories = {};
+      for(let category in this.budgetCategories){
+        if(category === 'Transfer'){
+          this.filteredCategories[category] = this.budgetCategories[category];
+        }
+      }
+    } else if(!this.debitDepositFlag) {
+      this.filteredCategories = {};
+      for (let category in this.budgetCategories) {
+        if(category !== 'Income'){
+          this.filteredCategories[category] = this.budgetCategories[category];
+        }
+      }
+    }else{
+      this.filteredCategories = {};
+      for(let category in this.budgetCategories){
+        if(category === 'Income'){
+          this.filteredCategories[category] = this.budgetCategories[category];
+        }
+      }
+    }
     this.transactionForm.controls['mainCategory'].setValue('');
     this.transactionForm.controls['subCategory'].setValue('');
-    this.getMainCategories(this.debitDepositFlag);
-    this.firebaseService.getFromAccounts(type).subscribe(resp => this.fromAccounts = resp);
-
-    this.firebaseService.getToAccounts(type).subscribe( resp => this.toAccounts = resp);
+    let from = 'from' + type;
+    let to = 'to' + type;
+    this.fromAccounts = {};
+    this.toAccounts = {};
+    for(let account in this.accountList){
+      if(this.accountList[account][from] === true){
+        this.fromAccounts[account] = this.accountList[account];
+      }
+      if(this.accountList[account][to] === true){
+        this.toAccounts[account] = this.accountList[account];
+      }
+    }
   }
 
   updateAmount($event) {
@@ -124,24 +146,20 @@ export class MainTransactionsComponent implements OnInit, AfterContentInit {
   }
 
   setFromToAccounts(value: string) {
-    for(let account of this.accountList){
-      if(account.id === value) {
-        return account.accountName;
-      }
+    if(value === ''){
+      return '';
     }
-    return '';
+    return this.accountList[value]['accountName'];
   }
 
   onSubmit(value: object){
-    console.log(value);
-    // this.setFromToAccounts(value['fromAccountID'], value['toAccountID']);
     value['fromAccount'] = this.setFromToAccounts(value['fromAccountID']);
     value['toAccount'] = this.setFromToAccounts(value['toAccountID']);
-    this.firebaseService.createTransaction(value).then(resp =>{
-      if(resp){
-        this.transactionForm.reset();
-        alert('Transaction Added');
-      }
-    });
+    value['transactionAmount'] = Math.abs(parseFloat(value['transactionAmount']));
+    if(this.firebaseService.createTransaction(value)){
+      this.transactionForm.reset();
+      this.snackBar.open('Transaction Added!');
+      this.router.navigateByUrl('transactions', {skipLocationChange: true});
+    }
   }
 }

@@ -1,0 +1,57 @@
+<div class="home-frame-border" style="width: 250px; float: top">
+  <div class="breadcrumb" style="text-align: center;">Account Summary</div>
+  <ng-container *ngIf="depositAccounts && accountListLength(depositAccounts) > 0">
+    <h5 class="center">Deposit Accounts</h5>
+      <ng-container *ngFor="let account of depositAccounts | keyvalue">
+        <div class="small-font table-margin"><!--Account Name -->
+          {{account.value['accountName']}}
+        </div>
+        <span style="float: right;" class="small-font table-margin" [style.color]="account.value['currentBalance'] < 0 ?'red': 'green'"><!-- Account Balance-->
+          <b>{{account.value['currentBalance'] | currency: 'USD'}}</b>
+        </span>
+        <br>
+      </ng-container>
+  </ng-container>
+  <ng-container *ngIf="debtAccounts && accountListLength(debtAccounts) > 0">
+      <h5 class="center">Debt Accounts</h5>
+      <ng-container *ngFor="let account of debtAccounts | keyvalue">
+        <div class="small-font table-margin"><!--Account Name -->
+          {{account.value['accountName']}}
+        </div>
+        <span style="float: right;" class="small-font table-margin" [style.color]="account.value['currentBalance'] < 0 ?'red': 'green'"><!-- Account Balance-->
+          {{account.value['currentBalance'] | currency: 'USD'}}
+        </span>
+        <br>
+      </ng-container>
+  </ng-container>
+  <ng-container *ngIf="retirementAccounts && accountListLength(retirementAccounts)> 0">
+  <div class="accordion" id="retireAccordion">
+      <h5 class="center">Retirement & Investment</h5>
+    </div>
+    <div class="collapse show" id="retireAccountsAccordion" aria-labelledby="retireAccountHeading" data-parent="#retireAccordion">
+      <ng-container *ngFor="let account of debtAccounts | keyvalue">
+        <div class="small-font table-margin"><!--Account Name -->
+          {{account.value['accountName']}}
+        </div>
+        <span style="float: right;" class="small-font table-margin" [style.color]="account.value['currentBalance'] < 0 ?'red': 'green'"><!-- Account Balance-->
+          {{account.value['currentBalance'] | currency: 'USD'}}
+        </span>
+        <br>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="otherAccounts && accountListLength(otherAccounts) > 0">
+  <div>
+      <h5 class="center">Misc</h5>
+      <ng-container *ngFor="let account of otherAccounts | keyvalue">
+        <div class="small-font table-margin"><!--Account Name -->
+          {{account.value['accountName']}}
+        </div>
+        <span style="float: right;" class="small-font table-margin" [style.color]="account.value['currentBalance'] < 0 ?'red': 'green'"><!-- Account Balance-->
+          {{account.value['currentBalance'] | currency: 'USD'}}
+        </span>
+        <br>
+      </ng-container>
+  </div>
+  </ng-container>
+</div>

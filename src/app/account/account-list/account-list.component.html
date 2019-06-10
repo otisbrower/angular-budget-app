@@ -10,21 +10,21 @@
 </div>
 
 <div class="list-group users-list">
-  <div *ngFor="let item of filtered_accounts" class="list-group-item list-group-item-action flex-column align-items-start">
-    <div class="row" [style.background]="item.currentBalance < 0 ? '#ffd3d3' : 'white'">
+  <div *ngFor="let account of filtered_accounts | keyvalue" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="row" [style.background]="account.value['accountBalance'] < 0 ? '#ffd3d3' : 'white'">
       <div class="col col-md-2 image-col">
-        <img class="image" [src]="sanitize(item.accountType)">
+        <img class="image" [src]="sanitize(account.value['accountType'])">
       </div>
       <div class="col col-md-8 text-col">
-        <h5 class="mb-1">{{item.accountType}} : {{item.accountName}}</h5>
+        <h5 class="mb-1">{{account.value['accountType']}} : {{account.value['accountName']}}</h5>
         <span>Balance: $</span>
-        <span [style.color]="item.currentBalance < 0 ? '#ff0000' : 'black'">{{item.currentBalance}}</span>
+        <span [style.color]="account.value['currentBalance'] < 0 ? '#ff0000' : 'black'">{{account.value['currentBalance'] | currency: 'symbol':''}}</span>
         <div>
-          <span>Account Key: {{item.monthEndBalance}}</span>
+          <span>Account Key: {{account.value['monthEndBalance']}}</span>
         </div>
       </div>
       <div class="col col-md-2 actions-col">
-        <button class="btn btn-outline-primary action" (click)="viewDetails(item)" type="button">
+        <button class="btn btn-outline-primary action" (click)="viewDetails(account.key)" type="button">
           <ion-icon class="icon" name="arrow-round-forward"></ion-icon>
         </button>
       </div>

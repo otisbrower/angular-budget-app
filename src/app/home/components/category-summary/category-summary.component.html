@@ -1,0 +1,28 @@
+<div class="table-margin" style="width: 400px;">
+  <mat-select class="input-style">
+    <select name="categorySelect" id="categorySelect" class="form-control" (change)="testChart($event.target['value'])">
+      <option></option>
+      <ng-container *ngIf="budgetCategories">
+        <ng-container *ngFor="let category of budgetCategories | keyvalue">
+          <ng-container *ngIf="excludeList.indexOf(category.key) === -1">
+            <option [value]="category.key">{{category.key}}</option>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </select>
+  </mat-select>
+  <div class="container">
+    <div class="chart" width="400" height="800">
+      <canvas baseChart
+      [data]="pieChartData"
+      [labels]="pieChartLabels"
+      [chartType]="pieChartType"
+      [options]="pieChartOptions"
+      [colors]="pieChartColors"
+      [legend]="pieChartLegend"
+      width="400"
+      height="400">
+      </canvas>
+    </div>
+  </div>
+  </div>

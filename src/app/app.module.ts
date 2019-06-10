@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER} from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NewUserComponent } from './new-user/new-user.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './home/components/home/home.component';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -19,7 +19,7 @@ import {
   MatSliderModule,
   MatDialogModule,
   MatDatepickerModule,
-  MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, NativeDateModule
+  MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, NativeDateModule, MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule
 } from '@angular/material';
 import {rootRouterConfig} from './app-routing.module';
 import { NewAccountComponent } from './account/new-account/new-account.component';
@@ -32,7 +32,11 @@ import { CurrencyMaskPipe } from './Common/Globals/currency-mask.pipe';
 import {CurrencyPipe, DatePipe} from '@angular/common';
 import { RecentTransactionListComponent } from './transaction/recent-transaction-list/recent-transaction-list.component';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
-
+import { AccountSummaryComponent } from './home/components/account-summary/account-summary.component';
+import { CategorySummaryComponent } from './home/components/category-summary/category-summary.component';
+import { MDBBootstrapModule} from 'angular-bootstrap-md';
+import {ChartsModule} from 'ng2-charts-x';
+import { BudgetPlanComponent } from './budget/budget-plan/budget-plan.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +50,10 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     DeleteAccountComponent,
     MainTransactionsComponent,
     CurrencyMaskPipe,
-    RecentTransactionListComponent
+    RecentTransactionListComponent,
+    AccountSummaryComponent,
+    CategorySummaryComponent,
+    BudgetPlanComponent
   ],
   entryComponents: [],
   imports: [
@@ -64,13 +71,20 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NativeDateModule
+    MatSnackBarModule,
+    NativeDateModule,
+    MDBBootstrapModule,
+    ChartsModule
   ],
   providers: [
     FirebaseService,
     CurrencyPipe,
     DatePipe,
-    {provide: MAT_DATE_LOCALE, useValue:'en-US'}
+    {provide: MAT_DATE_LOCALE, useValue:'en-US'},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {duration: 2500,
+        verticalPosition: 'top',
+      panelClass: ['blue-snackbar']}}
     // {provide: MAT_DATE_FORMATS, useValue: MY_NATIVE_DATE_FORMATS}
   ],
   bootstrap: [

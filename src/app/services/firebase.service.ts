@@ -1,49 +1,48 @@
 import { Injectable, OnInit } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {DatePipe} from '@angular/common';
-import * as firebase from 'firebase/app';
-import Timestamp = firebase.firestore.Timestamp;
+import * as firebase from 'firebase';
 import { Account } from '../Common/models/account';
-import { AccountType } from '../Common/models/account-type';
-import { TransactionType } from '../Common/models/transaction-type';
-import {Transaction} from '../Common/models/transaction';
 import {AngularFireDatabase} from '@angular/fire/database';
 import {Observable} from 'rxjs';
+import FieldValue = firebase.firestore.FieldValue;
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService implements OnInit{
 
-  private accounts: Array<Account> = [];
+  private accounts: object = {};
   private accountTypes: object;
-  private transactionTypes: Array<TransactionType> = [];
-  private transactionList: Array<Transaction> = [];
+  private transactionTypes: object;
+  private transactionList: Observable<object>;
   private categoryList: Array<any> = [];
+  private budgetCategories: object;
+  private transactionIndex = 0;
 
   constructor(public db: AngularFirestore,
               public datePipe: DatePipe,
               public db2: AngularFireDatabase) {}
 
   ngOnInit(){
-    this.retrieveAccounts();
   }
 
   startService(){
     this.retrieveAccounts();
     this.retrieveAccountTypes();
     this.retrieveTransactionTypes();
-    this.retrieveTransactionList();
+    // this.retrieveTransactionList();
     this.retrieveBudgetCategories();
+
   }
 
   retrieveAccounts() {
-    this.db.collection('accounts').snapshotChanges().subscribe(resp => {
+    return this.db.collection('accounts').snapshotChanges().subscribe(resp => {
       if(resp){
         for(let account of resp) {
           let item = account.payload.doc.data() as Account;
           item.id = account.payload.doc.id;
-          this.accounts.push(item);
+          this.accounts[item.id] = item;
         }
       }
     });
@@ -52,63 +51,52 @@ export class FirebaseService implements OnInit{
   retrieveAccountTypes(){
     this.db2.object('/account_type').query.once('value').then(resp => {
       this.accountTypes = resp.val();
-      console.log(this.accountTypes);
     });
-    // this.db.collection('account_type').snapshotChanges().subscribe(resp => {
-    //   if(resp){
-    //     for(let type of resp){
-    //       let item = type.payload.doc.data() as AccountType;
-    //       item.id = type.payload.doc.id;
-    //       this.accountTypes.push(item);
-    //     }
-    //   }
-    // })
   }
 
   retrieveTransactionTypes(){
-    return this.db.collection('transaction_type').snapshotChanges().subscribe( resp => {
-      if(resp){
-        for(let type of resp){
-          let item = type.payload.doc.data() as TransactionType;
-          item.id = type.payload.doc.id;
-          this.transactionTypes.push(item);
-        }
-      }
-    });
+    this.db2.list('/transaction_type').query.once('value').then( resp => {
+      this.transactionTypes = resp.val();
+    })
   }
 
   retrieveTransactionList(){
-    this.db.collection('transactions', ref => ref.orderBy('transactionDate', 'desc'))
-      .snapshotChanges().subscribe( resp => {
-        if(resp){
-          for(let trans of resp){
-            let item = trans.payload.doc.data() as Transaction;
-            item.id = trans.payload.doc.id;
-            this.transactionList.push(item);
-          }
-        }
+    this.db.collection('transactionIndex').doc('P6hhRBHvC97LUx6HVqiG').valueChanges().subscribe(resp => {
+      // console.log(resp);
+      this.transactionIndex = resp['index'];
+      console.log(this.transactionIndex);
     });
+    let maxHistory = new firebase.firestore.Timestamp(firebase.firestore.Timestamp.now().seconds - (90*24*60*60), 0);
+    return this.db.collection('transactions', ref => ref
+      .where('transactionDate', '>=', maxHistory)
+      .orderBy('transactionDate', 'desc')).valueChanges();
+  }
+
+  currentMonthTransactions(){
+    let date = new Date();
+    let day = parseInt(((date.getTime() - (date.getDate()*24*60*60*1000))/1000).toFixed(0));
+    let timestamp = new firebase.firestore.Timestamp(day, 0);
+    return this.db.collection('transactions', ref => ref.where('transactionDate', '>=',  timestamp)).valueChanges();
   }
 
   retrieveBudgetCategories(){
-    this.db2.list('/budget_categories').query.once('value').then(resp => {
-      console.log(resp.val());
+    this.db2.object('/budget_categories').query.once('value').then(resp => {
+      this.budgetCategories = resp.val();
     });
-    this.db.collection('budget_categories').snapshotChanges().subscribe(resp => {
-      if(resp){
-        for(let cat of resp){
-          let item = cat.payload.doc.data();
-          item['id'] = cat.payload.doc.id;
-          // console.log(cat.payload.doc.data());
-        }
-      }
-    })
+  }
+
+  setTransactionIndex(val: number){
+    // console.log(typeof this.transactionIndex);
+    // this.transactionIndex = val;
   }
 
   getUser(userKey){
     return this.db.collection('users').doc(userKey).snapshotChanges();
   }
 
+  getAccountSummary() {
+    return this.db.collection('accounts').snapshotChanges();
+  }
   getAccount(accountKey) {
     return this.db.collection('accounts').doc(accountKey).snapshotChanges();
   }
@@ -156,33 +144,62 @@ export class FirebaseService implements OnInit{
   }
 
   createTransaction(value) {
-    console.log(value);
     if(value.fromAccountID != '') {
-      this.updateFromAccount(value.fromAccountID, value.transactionAmount);
+      this.updateFromAccount(value.fromAccountID, -value.transactionAmount);
     }
     if(value.toAccountID !== ''){
       this.updateToAccount(value.toAccountID, value.transactionAmount);
     }
+    let batchAdd = [];
+    if(value.fromAccountID !== '') {
+      batchAdd.push({
+        index: this.transactionIndex + batchAdd.length,
+        userID: value.userID,
+        transactionType: value.transactionType,
+        mainCategory: value.mainCategory,
+        subCategory: value.subCategory,
+        fromAccount: value.fromAccount,
+        toAccount: value.toAccount,
+        transactionAmount: -value.transactionAmount,
+        createDate: new Date().getDate(),
+        transactionDate: value.transactionDate,
+        description: value.description
+      });
+    }
+    if(value.toAccountID !== '') {
+      batchAdd.push({
+        index: this.transactionIndex + batchAdd.length,
+        userID: value.userID,
+        transactionType: value.transactionType,
+        mainCategory: value.mainCategory,
+        subCategory: value.subCategory,
+        fromAccount: value.fromAccount,
+        toAccount: value.toAccount,
+        transactionAmount: value.transactionAmount,
+        createDate: new Date().getDate(),
+        transactionDate: value.transactionDate,
+        description: value.description
+      });
+    }
 
-    return this.db.collection('transactions').add({
-      userID: value.userID,
-      transactionType: value.transactionType,
-      mainCategory: value.mainCategory,
-      subCategory: value.subCategory,
-      fromAccount: value.fromAccount,
-      toAccount: value.toAccount,
-      transactionAmount: value.transactionAmount.replace('$', '') as number,
-      createDate: new Date().getDate(),
-      transactionDate: value.transactionDate,
-      description: value.description
+    let tempdb = firebase.firestore();
+    let batch = tempdb.batch();
+    batchAdd.forEach((doc) => {
+      let ref = tempdb.collection('transactions').doc();
+      this.db.doc('transactionIndex/P6hhRBHvC97LUx6HVqiG').update({index: FieldValue.increment(1)})
+      batch.set(ref, doc);
     });
+
+    batch.commit();
+    return true;
+    // let tempTrans = this.db.collection('transactions').add();
   }
 
   updateFromAccount(account, transactionAmount){
 
     return this.db.collection('accounts').doc(account).get().subscribe(resp => {
       let tempAcctData = resp.data();
-      tempAcctData.currentBalance = tempAcctData.currentBalance - transactionAmount.replace('$', '');
+      tempAcctData.currentBalance = tempAcctData.currentBalance + transactionAmount;
       this.db.collection('accounts').doc(account).set(tempAcctData);
     });
   }
@@ -190,7 +207,7 @@ export class FirebaseService implements OnInit{
   updateToAccount(account, transactionAmount){
     return this.db.collection('accounts').doc(account).get().subscribe( resp => {
       let tempAcctData = resp.data();
-      tempAcctData.currentBalance = tempAcctData.currentBalance + parseFloat(transactionAmount.replace('$', ''));
+      tempAcctData.currentBalance = tempAcctData.currentBalance + transactionAmount;
       this.db.collection('accounts').doc(account).set(tempAcctData);
     })
   }
@@ -206,23 +223,15 @@ export class FirebaseService implements OnInit{
   getTransactionTypes() {
     return this.transactionTypes;
   }
-  getBudgetCategoryTypes(flag?: boolean) {
-    if(flag === undefined){
-      return this.db.collection('budget_categories', ref =>
-        ref.orderBy('index')).snapshotChanges();
-    }
-    return this.db.collection('budget_categories', ref =>
-      ref.where('debit_deposit', '==', flag).orderBy('index')).snapshotChanges();
+  getBudgetCategoryTypes() {
+    return this.budgetCategories;
   }
 
   getBudgetSubcategory(key) {
     return this.db.collection('budget_categories').doc(key).collection('subcategory', ref =>
       ref.orderBy('index')).snapshotChanges();
   }
-  searchAccounts(value){
-    return this.db.collection('accounts', ref => ref.where('accountNameToSearch', '>=', value)
-      .where('accountNameToSearch', '<=', value + '\uf8ff')).snapshotChanges();
-  }
+
   getFromAccounts(value){
     let searchPath = 'from' + value;
     return this.db.collection('accounts', ref => ref.where(searchPath, '==', true)).snapshotChanges();
