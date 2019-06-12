@@ -37,6 +37,8 @@ import { CategorySummaryComponent } from './home/components/category-summary/cat
 import { MDBBootstrapModule} from 'angular-bootstrap-md';
 import {ChartsModule} from 'ng2-charts-x';
 import { BudgetPlanComponent } from './budget/budget-plan/budget-plan.component';
+import { BudgetCategorySummaryComponent } from './budget/budget-category-summary/budget-category-summary.component';
+import { BudgetPlanEditComponent } from './budget/budget-plan-edit/budget-plan-edit.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { BudgetPlanComponent } from './budget/budget-plan/budget-plan.component'
     RecentTransactionListComponent,
     AccountSummaryComponent,
     CategorySummaryComponent,
-    BudgetPlanComponent
+    BudgetPlanComponent,
+    BudgetCategorySummaryComponent,
+    BudgetPlanEditComponent
   ],
   entryComponents: [],
   imports: [

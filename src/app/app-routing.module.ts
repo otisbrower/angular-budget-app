@@ -6,6 +6,7 @@ import {AccountListComponent} from './account/account-list/account-list.componen
 import {UpdateAccountComponent} from './account/update-account/update-account.component';
 import {MainTransactionsComponent} from './transaction/main-transactions/main-transactions.component';
 import {BudgetPlanComponent} from './budget/budget-plan/budget-plan.component';
+import {BudgetCategorySummaryComponent} from './budget/budget-category-summary/budget-category-summary.component';
 
 export const rootRouterConfig: Routes = [
   { path: '', component: HomeComponent },
@@ -15,5 +16,6 @@ export const rootRouterConfig: Routes = [
   { path: 'accountList', component: AccountListComponent},
   { path: 'updateAccount/:id', component: UpdateAccountComponent},
   { path: 'transactions', component: MainTransactionsComponent},
-  { path: 'budgetplan', component: BudgetPlanComponent}
+  { path: 'budgetplan', component: BudgetPlanComponent},
+  { path: 'budgetsummary', component: BudgetCategorySummaryComponent}
 ];
