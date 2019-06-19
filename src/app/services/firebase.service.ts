@@ -33,7 +33,6 @@ export class FirebaseService implements OnInit{
     this.retrieveTransactionTypes();
     // this.retrieveTransactionList();
     this.retrieveBudgetCategories();
-
   }
 
   retrieveAccounts() {
@@ -83,6 +82,10 @@ export class FirebaseService implements OnInit{
     this.db2.object('/budget_categories').query.once('value').then(resp => {
       this.budgetCategories = resp.val();
     });
+  }
+
+  retrieveBudgetPlan() {
+    return this.db2.object('/budgetPlan').valueChanges();
   }
 
   setTransactionIndex(val: number){

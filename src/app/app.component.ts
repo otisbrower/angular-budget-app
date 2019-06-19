@@ -13,5 +13,6 @@ export class AppComponent implements OnInit{
   ngOnInit(){
     this.router.navigate(['']);
     this.firebaseService.startService();
+    console.clear();
   }
 }

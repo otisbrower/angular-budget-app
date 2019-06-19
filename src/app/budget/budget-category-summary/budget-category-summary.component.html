@@ -1,15 +1,12 @@
-<p>
-  budget-category-summary works!
-</p>
-<nav class="breadcrumb"></nav>
+<nav class="breadcrumb">Budget Summary</nav>
 <table class="table-margin">
   <tr>
     <td style="vertical-align: top">
       <app-account-summary></app-account-summary>
     </td>
-    <td style="vertical-align: top">
+    <td style="vertical-align: top" width="100%">
       <ng-contaienr>
-
+        <app-budget-category-acordian [categoryAcordian]="categoryAcordian" [budgetTotal]="budgetTotal"></app-budget-category-acordian>
       </ng-contaienr>
     </td>
   </tr>

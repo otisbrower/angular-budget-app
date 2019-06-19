@@ -39,6 +39,7 @@ import {ChartsModule} from 'ng2-charts-x';
 import { BudgetPlanComponent } from './budget/budget-plan/budget-plan.component';
 import { BudgetCategorySummaryComponent } from './budget/budget-category-summary/budget-category-summary.component';
 import { BudgetPlanEditComponent } from './budget/budget-plan-edit/budget-plan-edit.component';
+import { BudgetCategoryAcordianComponent } from './budget/budget-category-acordian/budget-category-acordian.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { BudgetPlanEditComponent } from './budget/budget-plan-edit/budget-plan-e
     CategorySummaryComponent,
     BudgetPlanComponent,
     BudgetCategorySummaryComponent,
-    BudgetPlanEditComponent
+    BudgetPlanEditComponent,
+    BudgetCategoryAcordianComponent
   ],
   entryComponents: [],
   imports: [

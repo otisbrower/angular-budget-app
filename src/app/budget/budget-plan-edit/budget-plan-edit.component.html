@@ -1,3 +1,38 @@
-<p>
-  budget-plan-edit works!
-</p>
+<ng-container *ngIf="budgetPlan">
+  <div class="table-margin">
+    <table class="table-margin" style="table-layout: fixed;" width="100%">
+      <tr style="text-align: left">
+        <th width="100%"></th>
+        <th width="150px">Available Budget</th>
+        <th width="150px">Total Budgeted</th>
+        <th width="50px"></th>
+      </tr>
+      <tr>
+        <td style="font-size: 25px;"><b>Month Budget Spending</b></td>
+        <td></td>
+        <td></td>
+        <td ><ion-icon name="create" size="large"></ion-icon></td>
+      </tr>
+    </table>
+    <br>
+    <table class="table-margin" style="table-layout: fixed;" width="100%">
+        <ng-container *ngFor="let category of budgetPlan | keyvalue">
+          <ng-container *ngIf="category.key !== 'Income'">
+            <tr style="border-bottom: 1px solid;">
+              <td width="100%">
+                <span>{{category.key}}</span>
+              </td>
+              <td></td>
+              <td style="width: 150px">
+                <span class="right" style="color: blue">{{category.value | currency: 'USD'}}</span>
+              </td>
+              <td style="width: 50px">
+                <ion-icon name="create" size="large"></ion-icon>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+    </table>
+  </div>
+</ng-container>
+
