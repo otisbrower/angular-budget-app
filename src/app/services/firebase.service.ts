@@ -88,9 +88,9 @@ export class FirebaseService implements OnInit{
     return this.db2.object('/budgetPlan').valueChanges();
   }
 
-  setTransactionIndex(val: number){
-    // console.log(typeof this.transactionIndex);
-    // this.transactionIndex = val;
+  setBudgetCategoryBudgetedAmount(category: string, value: number){
+    console.log(value);
+     return this.db2.object('/budgetPlan/' + category).set(value);
   }
 
   getUser(userKey){

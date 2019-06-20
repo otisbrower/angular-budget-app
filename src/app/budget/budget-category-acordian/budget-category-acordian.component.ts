@@ -16,6 +16,10 @@ export class BudgetCategoryAcordianComponent implements OnInit {
   ngOnInit() {
     this.firebaseService.retrieveBudgetPlan().subscribe(resp => {
       this.budgetPlan = resp;
+      for(let cat in this.budgetPlan){
+        this.budgetPlan[cat] = parseFloat(this.budgetPlan[cat]);
+        console.log(this.budgetPlan);
+      }
     })
   }
 

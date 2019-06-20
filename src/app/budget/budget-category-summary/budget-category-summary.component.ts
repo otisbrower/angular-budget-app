@@ -26,7 +26,7 @@ export class BudgetCategorySummaryComponent implements OnInit {
       if(resp) {
 
         this.firebaseService.retrieveBudgetPlan().subscribe(budgetResp => {
-          this.budgetTotal['totalBudgeted'] = budgetResp['Income'];
+          this.budgetTotal['totalBudgeted'] = parseFloat(budgetResp['Income']);
           console.log(this.budgetTotal);
           this.sortBudget(resp);
         });

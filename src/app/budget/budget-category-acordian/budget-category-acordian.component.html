@@ -30,7 +30,7 @@ aria-multiselectable="true" style="width: 100%; font-size: 14px">
                       <span>{{category.key}}</span>
                     </td>
                     <td style="width: 119px">
-                      <span class="table-margin left">{{budgetPlan[category.key]}}</span>
+                      <span class="table-margin left">{{budgetPlan[category.key] | currency: 'USD'}}</span>
                     </td>
                     <td style="width: 119px">
                       <span class="table-margin right" style="color: red">{{category.value['categoryTotal'] | currency: 'USD'}}</span>

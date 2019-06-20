@@ -19,7 +19,13 @@ import {
   MatSliderModule,
   MatDialogModule,
   MatDatepickerModule,
-  MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, NativeDateModule, MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule
+  MatNativeDateModule,
+  MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+  NativeDateModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MatSnackBarModule,
+  MAT_DIALOG_DEFAULT_OPTIONS
 } from '@angular/material';
 import {rootRouterConfig} from './app-routing.module';
 import { NewAccountComponent } from './account/new-account/new-account.component';
@@ -40,6 +46,7 @@ import { BudgetPlanComponent } from './budget/budget-plan/budget-plan.component'
 import { BudgetCategorySummaryComponent } from './budget/budget-category-summary/budget-category-summary.component';
 import { BudgetPlanEditComponent } from './budget/budget-plan-edit/budget-plan-edit.component';
 import { BudgetCategoryAcordianComponent } from './budget/budget-category-acordian/budget-category-acordian.component';
+import { EditPopupComponent } from './budget/budget-plan-edit/pop-up/edit-popup/edit-popup.component';
 
 @NgModule({
   declarations: [
@@ -59,9 +66,13 @@ import { BudgetCategoryAcordianComponent } from './budget/budget-category-acordi
     BudgetPlanComponent,
     BudgetCategorySummaryComponent,
     BudgetPlanEditComponent,
-    BudgetCategoryAcordianComponent
+    BudgetCategoryAcordianComponent,
+    EditPopupComponent
   ],
-  entryComponents: [],
+  entryComponents: [
+    BudgetPlanEditComponent,
+    EditPopupComponent
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -90,7 +101,8 @@ import { BudgetCategoryAcordianComponent } from './budget/budget-category-acordi
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
       useValue: {duration: 2500,
         verticalPosition: 'top',
-      panelClass: ['blue-snackbar']}}
+      panelClass: ['blue-snackbar']}},
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
     // {provide: MAT_DATE_FORMATS, useValue: MY_NATIVE_DATE_FORMATS}
   ],
   bootstrap: [

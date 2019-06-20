@@ -3,15 +3,17 @@
     <table class="table-margin" style="table-layout: fixed;" width="100%">
       <tr style="text-align: left">
         <th width="100%"></th>
+        <th width="200px">Estimated Budget Total</th>
         <th width="150px">Available Budget</th>
         <th width="150px">Total Budgeted</th>
         <th width="50px"></th>
       </tr>
-      <tr>
+      <tr style="border-bottom: 3px solid lightgray">
         <td style="font-size: 25px;"><b>Month Budget Spending</b></td>
-        <td></td>
-        <td></td>
-        <td ><ion-icon name="create" size="large"></ion-icon></td>
+        <td><b>{{budgetPlan['Income'] | currency: 'USD'}}</b></td>
+        <td [style.color]="budgetPlan['Income'] - totalBudgeted > 0 ? 'green': 'red'"><b>{{budgetPlan['Income'] - totalBudgeted | currency: 'USD'}}</b></td>
+        <td style="color: blue"><b>{{totalBudgeted | currency: 'USD'}}</b></td>
+        <td (click)="updateBudgetAmount('Income', budgetPlan['Income'])"><ion-icon name="create" size="large"></ion-icon></td>
       </tr>
     </table>
     <br>
@@ -27,7 +29,7 @@
                 <span class="right" style="color: blue">{{category.value | currency: 'USD'}}</span>
               </td>
               <td style="width: 50px">
-                <ion-icon name="create" size="large"></ion-icon>
+                <ion-icon name="create" size="large" (click)="updateBudgetAmount(category.key, category.value)"></ion-icon>
               </td>
             </tr>
           </ng-container>
