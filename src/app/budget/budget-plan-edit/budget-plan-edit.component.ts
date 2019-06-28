@@ -13,28 +13,42 @@ export class BudgetPlanEditComponent implements OnInit {
   budgetPlan: object;
   totalBudgeted: number = 0;
   projectedIncome: number;
+  mainCategories: object = {};
   constructor(private firebaseService: FirebaseService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.firebaseService.retrieveBudgetPlan().subscribe( resp => {
+    this.firebaseService.retrieveBudgetPlan().subscribe(resp => {
+      console.log(resp);
       this.budgetPlan = resp;
-      this.projectedIncome = resp['Income'];
-      this.calcBudgetTotal();
       console.log(this.budgetPlan);
-      console.log(this.projectedIncome);
-    })
+      this.projectedIncome = resp['Income'];
+    });
+    // this.firebaseService.retrieveBudgetPlan().subscribe(resp => {
+    //   this.budgetPlan = resp;
+    //   console.log(resp);
+    //   this.projectedIncome = resp['Income'];
+    //   console.log(this.budgetPlan);
+    //   this.calcBudgetTotal();
+    //   console.log(this.projectedIncome);
+    // });
   }
 
   calcBudgetTotal(){
     this.totalBudgeted = 0;
-    for(let category in this.budgetPlan) {
-      if(category != 'Income'){
-        this.totalBudgeted += parseFloat(this.budgetPlan[category]);
+    for(let mainCategory in this.budgetPlan) {
+      // console.log(mainCategory);
+      this.budgetPlan[mainCategory] = 0;
+      for(let subCategory of this.budgetPlan[mainCategory]) {
+        console.log(subCategory);
+        // console.log(this.budgetPlan[mainCategory][subCategory]);
+        this.totalBudgeted += parseFloat(this.budgetPlan[mainCategory][subCategory]);
+        // console.log(this.totalBudgeted);
+        this.mainCategories[mainCategory] += parseFloat(this.budgetPlan[mainCategory][subCategory]);
       }
     }
 
-    console.log(this.totalBudgeted);
+    // console.log(this.totalBudgeted);
   }
 
   updateBudgetAmount(category: string, value: number){

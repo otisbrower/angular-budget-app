@@ -10,31 +10,82 @@
       </tr>
       <tr style="border-bottom: 3px solid lightgray">
         <td style="font-size: 25px;"><b>Month Budget Spending</b></td>
-        <td><b>{{budgetPlan['Income'] | currency: 'USD'}}</b></td>
-        <td [style.color]="budgetPlan['Income'] - totalBudgeted > 0 ? 'green': 'red'"><b>{{budgetPlan['Income'] - totalBudgeted | currency: 'USD'}}</b></td>
+        <td><b>{{mainCategories['Income'] | currency: 'USD'}}</b></td>
+        <td [style.color]="mainCategories['Income'] - totalBudgeted > 0 ? 'green': 'red'"><b>{{budgetPlan['Income'] - totalBudgeted | currency: 'USD'}}</b></td>
         <td style="color: blue"><b>{{totalBudgeted | currency: 'USD'}}</b></td>
         <td (click)="updateBudgetAmount('Income', budgetPlan['Income'])"><ion-icon name="create" size="large"></ion-icon></td>
       </tr>
     </table>
     <br>
     <table class="table-margin" style="table-layout: fixed;" width="100%">
-        <ng-container *ngFor="let category of budgetPlan | keyvalue">
-          <ng-container *ngIf="category.key !== 'Income'">
+        <ng-container *ngFor="let mainCategory of budgetPlan | keyvalue">
+          <ng-container *ngIf="mainCategory.key !== 'Income'">
             <tr style="border-bottom: 1px solid;">
               <td width="100%">
-                <span>{{category.key}}</span>
+                <span>{{mainCategory.key}}</span>
               </td>
               <td></td>
               <td style="width: 150px">
-                <span class="right" style="color: blue">{{category.value | currency: 'USD'}}</span>
+                <span class="right" style="color: blue">{{mainCategories[mainCategory.key] | currency: 'USD'}}</span>
               </td>
               <td style="width: 50px">
-                <ion-icon name="create" size="large" (click)="updateBudgetAmount(category.key, category.value)"></ion-icon>
+                <a href="javascript:void(0);" class="material-icons" aria-hidden="false" aria-label="create button" addSvgIcon="create" (click)="updateBudgetAmount(mainCategory.key, mainCategory.value)">create</a>
               </td>
             </tr>
           </ng-container>
         </ng-container>
     </table>
+    <hr class="mb-0">
+    <div class="card" style="border: none">
+        <ng-container *ngFor="let category of budgetPlan | keyvalue, index as i">
+          <ng-container *ngIf="category.key !== 'Income' && category.key !== 'Income Deductions' && category.key !== 'Transfer'">
+            <div class="card-header" role="tab" id="category{{+i}}" style="padding-top: 0px; border-radius: 10px; border-width: 4px">
+              <a href="#subCategory{{+i}}" data-toggle="collapse" data-parent="#accordion1" aria-expanded="false">
+                <div class="mb-0 mt-3 red-text">
+                  <table style="table-layout: fixed" width="100%">
+                    <tr>
+                      <td width="100%">
+                        <span>{{category.key}}</span>
+                      </td>
+                      <td style="width: 119px">
+                        <span class="table-margin left">{{mainCategories[category.key] | currency: 'USD'}}</span>
+                      </td>
+                      <td style="width: 119px">
+                        <span class="table-margin right" style="color: red">{{category.value['categoryTotal'] | currency: 'USD'}}</span>
+                      </td>
+                      <td style="width: 119px">
+                        <span class="table-margin right" [style.color]="budgetPlan[category.key] + category.value['categoryTotal'] < 0 ? 'red'  : budgetPlan[category.key] + category.value['categoryTotal'] > 0 ? 'green' : 'black'">{{budgetPlan[category.key] + category.value['categoryTotal'] | currency: 'USD'}}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </a>
+            </div>
+            <ng-container *ngIf="budgetPlan[category.key]">
+              <div class="collapse" id="subCategory{{+i}}" role="tabpanel"  data-parent="#accordion1" style="margin-left: 50px">
+                <table class="left" style="table-layout: fixed" width="100%">
+                  <ng-container *ngFor="let subCat of budgetPlan[category.key] | keyvalue">
+                    <tr>
+                      <td>
+                        <span>{{subCat.key}}</span>
+                      </td>
+                      <td style="width: 124px; float: right">
+                        <span ></span>
+                      </td>
+                      <td style="width: 124px; float: right">
+                        <span [style.color]="subCat.value > 0 ? 'green' : subCat.value < 0 ? 'red' : 'black'">{{subCat.value | currency: 'USD'}}</span>
+                      </td>
+                      <td style="width: 124px; float: right">
+                        <span></span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </table>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+    </div>
   </div>
 </ng-container>
 

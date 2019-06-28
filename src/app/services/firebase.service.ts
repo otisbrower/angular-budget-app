@@ -85,6 +85,7 @@ export class FirebaseService implements OnInit{
   }
 
   retrieveBudgetPlan() {
+    // this.db2.object('/budgetPlan').valueChanges().subscribe(resp => console.log(resp));
     return this.db2.object('/budgetPlan').valueChanges();
   }
 

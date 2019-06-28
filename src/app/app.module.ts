@@ -25,7 +25,7 @@ import {
   NativeDateModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
   MatSnackBarModule,
-  MAT_DIALOG_DEFAULT_OPTIONS
+  MAT_DIALOG_DEFAULT_OPTIONS, MatIconModule
 } from '@angular/material';
 import {rootRouterConfig} from './app-routing.module';
 import { NewAccountComponent } from './account/new-account/new-account.component';
@@ -47,6 +47,7 @@ import { BudgetCategorySummaryComponent } from './budget/budget-category-summary
 import { BudgetPlanEditComponent } from './budget/budget-plan-edit/budget-plan-edit.component';
 import { BudgetCategoryAcordianComponent } from './budget/budget-category-acordian/budget-category-acordian.component';
 import { EditPopupComponent } from './budget/budget-plan-edit/pop-up/edit-popup/edit-popup.component';
+
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import { EditPopupComponent } from './budget/budget-plan-edit/pop-up/edit-popup/
     MatSnackBarModule,
     NativeDateModule,
     MDBBootstrapModule,
-    ChartsModule
+    ChartsModule,
+    MatIconModule
   ],
   providers: [
     FirebaseService,
