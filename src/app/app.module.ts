@@ -40,8 +40,6 @@ import { RecentTransactionListComponent } from './transaction/recent-transaction
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import { AccountSummaryComponent } from './home/components/account-summary/account-summary.component';
 import { CategorySummaryComponent } from './home/components/category-summary/category-summary.component';
-import { MDBBootstrapModule} from 'angular-bootstrap-md';
-import {ChartsModule} from 'ng2-charts-x';
 import { BudgetPlanComponent } from './budget/budget-plan/budget-plan.component';
 import { BudgetCategorySummaryComponent } from './budget/budget-category-summary/budget-category-summary.component';
 import { BudgetPlanEditComponent } from './budget/budget-plan-edit/budget-plan-edit.component';
@@ -91,8 +89,6 @@ import { EditPopupComponent } from './budget/budget-plan-edit/pop-up/edit-popup/
     MatNativeDateModule,
     MatSnackBarModule,
     NativeDateModule,
-    MDBBootstrapModule,
-    ChartsModule,
     MatIconModule
   ],
   providers: [
