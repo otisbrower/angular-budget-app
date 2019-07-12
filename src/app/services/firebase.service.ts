@@ -73,7 +73,9 @@ export class FirebaseService implements OnInit{
 
   currentMonthTransactions(){
     let date = new Date();
+    console.log(date);
     let day = parseInt(((date.getTime() - (date.getDate()*24*60*60*1000))/1000).toFixed(0));
+    console.log(day);
     let timestamp = new firebase.firestore.Timestamp(day, 0);
     return this.db.collection('transactions', ref => ref.where('transactionDate', '>=',  timestamp)).valueChanges();
   }
