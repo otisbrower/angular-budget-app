@@ -87,13 +87,11 @@ export class FirebaseService implements OnInit{
   }
 
   retrieveBudgetPlan() {
-    // this.db2.object('/budgetPlan').valueChanges().subscribe(resp => console.log(resp));
     return this.db2.object('/budgetPlan').valueChanges();
   }
 
-  setBudgetCategoryBudgetedAmount(category: string, value: number){
-    console.log(value);
-     return this.db2.object('/budgetPlan/' + category).set(value);
+  setBudgetCategoryBudgetedAmount(mainCategory: string, category: string, value: number){
+     return this.db2.object('/budgetPlan/' + mainCategory + '/' + category).set(value);
   }
 
   getUser(userKey){

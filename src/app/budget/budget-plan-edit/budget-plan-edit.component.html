@@ -16,40 +16,48 @@
                 </tr>
                 <tr style="border-bottom: 3px solid lightgray">
                   <td style="font-size: 25px;"><b>Month Budget Spending</b></td>
-                  <td><b>{{mainCategories['Income'] | currency: 'USD'}}</b></td>
-                  <td [style.color]="mainCategories['Income'] - totalBudgeted > 0 ? 'green': 'red'"><b>{{budgetPlan['Income'] - totalBudgeted | currency: 'USD'}}</b></td>
+                  <td><b>{{incomeTotal | currency: 'USD'}}</b></td>
+                  <td [style.color]="mainCategories['Income'] - totalBudgeted > 0 ? 'green': 'red'"><b>{{incomeTotal - totalBudgeted | currency: 'USD'}}</b></td>
                   <td style="color: blue"><b>{{totalBudgeted | currency: 'USD'}}</b></td>
-                  <td (click)="updateBudgetAmount('Income', budgetPlan['Income'])"><ion-icon name="create" size="large"></ion-icon></td>
+                  <td></td>
                 </tr>
-                <div class="collapse" id="incomeCategories" role="tabpanel"  data-parent="#incomeEstimate" style="margin-left: 50px">
-                </div>
               </table>
             </div>
           </div>
         </a>
       </div>
+      <ng-container *ngIf="budgetPlan['Income']">
+        <div class="collapse" id="incomeCategories" role="tabpanel"  data-parent="#incomeEstimate" style="margin-left: 50px">
+          <table class="left" style="table-layout: fixed" width="100%">
+            <ng-container *ngFor="let subCat of budgetPlan['Income'] | keyvalue">
+              <tr>
+                <td style="width: 100%">
+                  <span>{{subCat.key}}</span>
+                </td>
+                <td style="width: 124px;">
+                  <span ></span>
+                </td>
+                <td style="width: 124px;">
+                  <span [style.color]="subCat.value > 0 ? 'green' : subCat.value < 0 ? 'red' : 'black'">{{subCat.value | currency: 'USD'}}</span>
+                </td>
+                <td style="width: 124px;">
+                  <a href="">
+                    <span (click)="updateBudgetAmount('Income', subCat.key, subCat.value)">
+                      <i class="material-icons">
+                      edit
+                      </i>
+                    </span>
+                  </a>
+                </td>
+              </tr>
+            </ng-container>
+          </table>
+        </div>
+      </ng-container>
     </div>
   </div>
 
     <br>
-    <!--<table class="table-margin" style="table-layout: fixed;" width="100%">-->
-        <!--<ng-container *ngFor="let mainCategory of budgetPlan | keyvalue">-->
-          <!--<ng-container *ngIf="mainCategory.key !== 'Income'">-->
-            <!--<tr style="border-bottom: 1px solid;">-->
-              <!--<td width="100%">-->
-                <!--<span>{{mainCategory.key}}</span>-->
-              <!--</td>-->
-              <!--<td></td>-->
-              <!--<td style="width: 150px">-->
-                <!--<span class="right" style="color: blue">{{mainCategories[mainCategory.key] | currency: 'USD'}}</span>-->
-              <!--</td>-->
-              <!--<td style="width: 50px">-->
-                <!--<a href="javascript:void(0);" class="material-icons" aria-hidden="false" aria-label="create button" addSvgIcon="create" (click)="updateBudgetAmount(mainCategory.key, mainCategory.value)">create</a>-->
-              <!--</td>-->
-            <!--</tr>-->
-          <!--</ng-container>-->
-        <!--</ng-container>-->
-    <!--</table>-->
 
     <div class="table-margin" id="accordion1" role="tablist"
          aria-multiselectable="true" style="width: 100%; font-size: 14px">
@@ -66,12 +74,12 @@
                           <span>{{category.key}}</span>
                         </td>
                         <td style="width: 119px">
-                          <span class="table-margin left">{{mainCategories[category.key] | currency: 'USD'}}</span>
+                          <!-- <span class="table-margin left">{{mainCategories[category.key] | currency: 'USD'}}</span> -->
                         </td>
                         <td style="width: 119px">
-                          <span class="table-margin right" style="color: red">{{category.value['categoryTotal'] | currency: 'USD'}}</span>
+                          <!-- <span class="table-margin right" style="color: red">{{category.value['categoryTotal'] | currency: 'USD'}}</span> -->
                         </td>
-                        <td style="width: 119px">
+                        <td style="width: 155px">
                           <span class="table-margin right">{{mainCategories[category.key] | currency: 'USD'}}</span>
                         </td>
                       </tr>
@@ -84,17 +92,21 @@
                   <table class="left" style="table-layout: fixed" width="100%">
                     <ng-container *ngFor="let subCat of budgetPlan[category.key] | keyvalue">
                       <tr>
-                        <td>
+                        <td style="width: 100%">
                           <span>{{subCat.key}}</span>
                         </td>
-                        <td style="width: 124px; float: right">
+                        <td style="width: 124px;">
                           <span ></span>
                         </td>
-                        <td style="width: 124px; float: right">
+                        <td style="width: 124px;">
                           <span [style.color]="subCat.value > 0 ? 'green' : subCat.value < 0 ? 'red' : 'black'">{{subCat.value | currency: 'USD'}}</span>
                         </td>
-                        <td style="width: 124px; float: right">
-                          <span></span>
+                        <td style="width: 124px;">
+                          <span (click)="updateBudgetAmount(category.key, subCat.key, subCat.value)">
+                            <i class="material-icons">
+                            edit
+                            </i>
+                          </span>
                         </td>
                       </tr>
                     </ng-container>
