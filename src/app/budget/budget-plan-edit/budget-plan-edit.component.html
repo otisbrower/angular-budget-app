@@ -64,7 +64,7 @@
       <hr class="mb-0">
       <div class="card" style="border: none">
           <ng-container *ngFor="let category of budgetPlan | keyvalue, index as i">
-            <ng-container *ngIf="category.key !== 'Income' && category.key !== 'Income Deductions' && category.key !== 'Transfer'">
+            <ng-container *ngIf="category.key !== 'Income' && category.key !== 'Transfer'">
               <div class="card-header" role="tab" id="category{{+i}}" style="padding-top: 0px; border-radius: 10px; border-width: 4px">
                 <a href="#subCategory{{+i}}" data-toggle="collapse" data-parent="#accordion1" aria-expanded="false">
                   <div class="mb-0 mt-3 red-text">
