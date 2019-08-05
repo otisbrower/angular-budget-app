@@ -14,7 +14,7 @@ export class RecentTransactionListComponent implements OnInit {
   transactionList: Array<object> = [];
   filteredTransactionList: Array<object> = [];
   private firstPass = true;
-  private days = 30;
+  public days = 30;
 
 
   constructor(private firebaseService: FirebaseService,

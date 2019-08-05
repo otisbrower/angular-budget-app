@@ -94,4 +94,12 @@ export class UpdateAccountComponent implements OnInit {
   updateAmount($event) {
     this.updateForm.get('currentBalance').setValue(this.currencyPipe.transform($event, 'USD', '', '0.2-2'));
   }
+
+  deleteAccount(){
+    console.log(this.item.id);
+    this.firebaseService.deleteAccount(this.item.id).then(res => {
+      console.log(res);
+      this.router.navigate(['/accountList']);
+    });
+  }
 }

@@ -17,7 +17,7 @@
         <div class="form-group">
           <label>Account Type</label>
           <mat-select class="input-style">
-            <select matInput placeHolder="Account Type" class="form-control" formControlName="accountType">
+            <select matInput style="width: 500px;" placeHolder="Account Type" class="form-control" formControlName="accountType">
               <option *ngFor="let accountType of accountTypeList | keyvalue" [value]="accountType.key">{{accountType.key}}</option>
             </select>
           </mat-select>
@@ -41,7 +41,16 @@
 
         <div class="row submit-button-container">
           <div class="col-md-4">
-            <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="!updateForm.valid">Update Account</button>
+            <table width="500">
+              <tr>
+                <td>
+                  <button mat-raised-button class="submit-button" color="primary" type="submit" [disabled]="!updateForm.valid">Update Account</button>
+                </td>
+                <td>
+                  <button mat-raised-button class="submit-button" color="primary" (click)="deleteAccount()" style="float: right;">Delete Account</button>
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </form>

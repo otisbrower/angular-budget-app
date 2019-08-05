@@ -114,6 +114,13 @@ export class FirebaseService implements OnInit{
     return this.db.collection('accounts').doc(accountKey).set(value);
   }
 
+  deleteAccount(accountKey){
+    console.log(accountKey);
+    return this.db.collection('accounts').doc(accountKey).delete().then( res => {
+      console.log(res);
+    });
+  }
+
   deleteUser(userKey){
     return this.db.collection('users').doc(userKey).delete();
   }

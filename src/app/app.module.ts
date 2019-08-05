@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { NewUserComponent } from './new-user/new-user.component';
 import { HomeComponent } from './home/components/home/home.component';
 
 import { AngularFireModule } from '@angular/fire';
@@ -50,7 +49,6 @@ import { EditPopupComponent } from './budget/budget-plan-edit/pop-up/edit-popup/
 @NgModule({
   declarations: [
     AppComponent,
-    NewUserComponent,
     HomeComponent,
     NewAccountComponent,
     AccountListComponent,
